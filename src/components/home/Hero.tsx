@@ -12,7 +12,7 @@ const roleLines = identity.role.split(" & ");
 export function Hero() {
   const { props: portrait } = getImageProps({
     src: "/images/mee-hero-h03-c01.webp", width: 1191, height: 1321,
-    alt: "Portrait of Abdulrahman Elsayed", loading: "eager", fetchPriority: "high", quality: 90,
+    alt: "Portrait of Abdulrahman Elsayed", loading: "eager", fetchPriority: "high", quality: 75,
     sizes: "(max-height: 550px) and (max-width: 520px) max(530.13px, 88.355svh), (max-height: 550px) and (max-width: 720px) max(353.42px, 88.355svh), (max-height: 550px) max(360.64px, 90.159svh), (max-width: 720px) 81.288svh, 90.159svh",
   });
   return <HeroMotion className={`${styles.hero} ${heroFont.variable}`}>
