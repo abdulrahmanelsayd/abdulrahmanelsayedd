@@ -113,6 +113,20 @@ test("Hero text meets contrast requirements on its gray surface",async({page})=>
   }
 });
 
+test("Hero stays readable without overlap in a short landscape viewport",async({page})=>{
+  await page.setViewportSize({width:812,height:375});
+  await page.goto("/"); await idle(page);
+  const geometry=await page.evaluate(()=>{
+    const role=document.querySelector<HTMLElement>("[data-hero-role]")!;
+    const heading=document.querySelector<HTMLElement>("#home-hero-heading")!;
+    return {width:innerWidth,height:innerHeight,fontSize:parseFloat(getComputedStyle(role).fontSize),roleBottom:role.getBoundingClientRect().bottom,nameTop:heading.getBoundingClientRect().top};
+  });
+  expect({width:geometry.width,height:geometry.height}).toEqual({width:812,height:375});
+  expect(geometry.fontSize).toBeGreaterThanOrEqual(24);
+  expect(geometry.roleBottom).toBeLessThanOrEqual(geometry.nameTop);
+  await overflow(page);
+});
+
 test("About history restores the departure position and Home returns to the top",async({page})=>{
   await page.goto("/about"); await idle(page);
   await page.evaluate(()=>document.fonts.ready);
