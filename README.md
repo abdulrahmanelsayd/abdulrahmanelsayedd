@@ -55,3 +55,15 @@ Netlify reads the build command, output directory, npm version and public
 `SITE_URL` from `netlify.toml`; `.node-version` pins Node.js. Use Netlify's
 automatic Next.js integration so image optimization and route handling remain
 available. Verify the hosted preview before connecting the custom domain.
+
+GitHub Actions checks the locked install, lint, types, unit tests, production
+dependency audit and build. It then starts that build and checks the desktop
+and mobile release journeys, HTTP metadata and gallery gestures. These checks
+run on pushes to `main` and pull requests. They do not send email.
+
+The full dependency audit currently reports the development-only `braces`
+advisory [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm),
+which has no patched release. Its lint dependency chain uses repository-owned
+patterns and is absent from the reviewed production traces. The production
+audit is a blocking CI check. Keep the full audit enabled and revisit this
+exception when the dependency chain, pattern inputs or upstream advisory changes.
