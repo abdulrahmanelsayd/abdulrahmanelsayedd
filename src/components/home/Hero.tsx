@@ -13,7 +13,9 @@ export function Hero() {
   const { props: portrait } = getImageProps({
     src: "/images/mee-hero-h03-c01.webp", width: 1191, height: 1321,
     alt: "Portrait of Abdulrahman Elsayed", loading: "eager", fetchPriority: "high", quality: 75,
-    sizes: "(max-height: 550px) and (max-width: 520px) max(530.13px, 88.355svh), (max-height: 550px) and (max-width: 720px) max(353.42px, 88.355svh), (max-height: 550px) max(360.64px, 90.159svh), (max-width: 720px) 81.288svh, 90.159svh",
+    // The native portrait stays below 80 KiB. A fixed hint avoids a second mobile
+    // request when the preload scanner resolves viewport-height units differently.
+    sizes: "1191px",
   });
   return <HeroMotion className={`${styles.hero} ${heroFont.variable}`}>
     <div className={styles.photograph} data-hero-photo-layer>
