@@ -91,6 +91,39 @@ test("Home → Work → Services → Contact → About → Home, menu focus and 
   await page.goBack(); await expect(page.locator("main")).toHaveAttribute("data-route","/about"); await idle(page);
   await page.goForward(); await expect(page.locator("main")).toHaveAttribute("data-route","/"); await idle(page); await overflow(page);
 });
+test("About history restores the departure position and Home returns to the top",async({page})=>{
+  await page.goto("/about"); await idle(page);
+  await page.evaluate(()=>document.fonts.ready);
+  const home=page.getByRole("navigation",{name:"Footer navigation",exact:true}).locator('a[href="/"]');
+  await home.scrollIntoViewIfNeeded();
+  await page.evaluate(()=>{
+    const state=window as Window & {departureY?:number};
+    delete state.departureY;
+    document.addEventListener("click",event=>{
+      if(event.target instanceof Element && event.target.closest('nav[aria-label="Footer navigation"] a[href="/"]')) state.departureY=scrollY;
+    },{capture:true,once:true});
+  });
+  await home.click();
+  await expect(page.locator("main")).toHaveAttribute("data-route","/"); await idle(page);
+  const departure=await page.evaluate(()=>(window as Window & {departureY?:number}).departureY);
+  expect(departure).toBeGreaterThan(0);
+  expect(await page.evaluate(()=>scrollY)).toBe(0);
+  await page.goBack(); await expect(page.locator("main")).toHaveAttribute("data-route","/about"); await idle(page);
+  await expect.poll(async()=>Math.abs(await page.evaluate(()=>scrollY)-departure!)).toBeLessThanOrEqual(1);
+  await page.goForward(); await expect(page.locator("main")).toHaveAttribute("data-route","/"); await idle(page);
+  expect(await page.evaluate(()=>scrollY)).toBe(0);
+});
+
+for(const reducedMotion of ["reduce","no-preference"] as const) test("Services navigation releases scheduled measurements: "+reducedMotion,async({page})=>{
+  await page.emulateMedia({reducedMotion});
+  for(let repeat=0;repeat<3;repeat++) {
+    await page.goto("/services"); await idle(page);
+    await expect(page.locator("[data-services-hero-play]")).toHaveAttribute("aria-disabled",reducedMotion==="reduce"?"true":"false");
+    await footer(page,"/contact");
+    await expect(page.getByRole("button",{name:"Prepare email",exact:true})).toBeEnabled();
+  }
+});
+
 test("intro Escape releases locks and late activity cannot replay",async({page})=>{
   await page.goto("/",{waitUntil:"commit"});
   await page.waitForFunction(()=>window.__homeEntry?.active);
