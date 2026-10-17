@@ -1,0 +1,37 @@
+.ribbon { position:relative; margin-top:24px; padding-top:20px; border-top:1px solid #e5e5ea; }
+.ribbonViewport { overflow:hidden; mask-image:linear-gradient(90deg,transparent,#000 2%,#000 98%,transparent); }
+.ribbonTrack { display:flex; width:max-content; }
+.ribbon[data-ribbon-enhanced="true"] .ribbonTrack { animation:servicesRibbon 60s linear infinite; animation-play-state:paused; }
+.ribbon[data-ribbon-running="true"] .ribbonTrack { animation-play-state:running; }
+.ribbon:not([data-ribbon-enhanced="true"]) .ribbonViewport { overflow-x:auto; }
+.ribbonGroup,.ribbonPhrase { display:flex; align-items:center; flex-shrink:0; gap:clamp(24px,3vw,40px); }
+.ribbonGroup { padding-right:clamp(24px,3vw,40px); }
+.ribbonPhrase { font-size:clamp(30px,3.2vw,44px); line-height:1.15; letter-spacing:-.045em; font-weight:600; white-space:nowrap; }
+.ribbonPhrase > svg { width:30px; height:30px; color:#1d1d1f; }
+.ribbonDesign { color:#9951ac; }
+.ribbonDevelop { color:#4262b3; }
+.ribbonTogether { color:#508525; }
+.ribbonControl { position:relative; display:flex; justify-content:flex-end; min-height:44px; margin-top:4px; }
+.ribbonControl button { visibility:hidden; display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:8px 12px; border:1px solid #d2d2d7; border-radius:25px; background:transparent; color:#626267; font-size:11px; line-height:1.5; cursor:pointer; }
+.ribbon[data-ribbon-enhanced="true"] .ribbonControl button { visibility:visible; }
+.ribbonControl svg { width:14px; height:14px; }
+.playIcon { display:none; }
+.ribbonControl button[aria-pressed="true"] .playIcon { display:block; }
+.ribbonControl button[aria-pressed="true"] .pauseIcon { display:none; }
+.ribbonControl button:focus-visible { outline:2px solid #1d1d1f; outline-offset:3px; }
+@keyframes servicesRibbon { to { transform:translateX(-50%); } }
+@media(hover:hover) and (pointer:fine) {
+  .ribbon:hover .ribbonTrack { animation-play-state:paused; }
+  .ribbonControl button:hover { border-color:#1d1d1f; color:#1d1d1f; }
+}
+@media(max-width:599px) {
+  .ribbon { margin-top:20px; padding-top:18px; }
+  .ribbonGroup,.ribbonPhrase { gap:24px; }
+  .ribbonGroup { padding-right:24px; }
+  .ribbonPhrase { font-size:32px; }
+  .ribbonPhrase > svg { width:26px; height:26px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .ribbon[data-ribbon-enhanced="true"] .ribbonTrack { animation-play-state:paused; }
+  .ribbonViewport { overflow-x:auto; }
+}

@@ -1,0 +1,64 @@
+.container { max-width:1100px; margin-inline:auto; }
+.eyebrow { color:#626267; font-size:12px; line-height:1.5; font-weight:500; letter-spacing:-.015em; }
+.qualityList summary { display:flex; align-items:center; gap:12px; min-height:48px; cursor:pointer; list-style:none; }
+.advantages summary::-webkit-details-marker { display:none; }
+.plus { position:relative; display:block; width:20px; height:20px; margin-left:auto; flex-shrink:0; }
+.plus::before,.plus::after { content:""; position:absolute; top:9px; left:4px; width:12px; height:1.5px; border-radius:2px; background:currentColor; }
+.plus::after { transform:rotate(90deg); transition:transform .25s; }
+.advantages details[open] > summary .plus::after { transform:rotate(0); }
+.advantages summary:focus-visible { outline:2px solid currentColor; outline-offset:4px; border-radius:4px; }
+.advantages { padding:48px clamp(24px,6vw,110px) 56px; overflow:clip; background:#f4f4f4; color:#1d1d1f; }
+.qualityLayout { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); align-items:center; gap:clamp(40px,6vw,80px); }
+.qualityIntro { position:relative; padding-bottom:58px; }
+.qualityIntro h2 { margin-top:12px; font-size:clamp(36px,3.8vw,52px); line-height:1.08; font-weight:600; letter-spacing:-.045em; }
+.qualityIntro h2 > span { position:relative; display:inline-block; }
+.qualityIntro h2 > span > svg { position:absolute; inset:auto 0 -.13em; width:100%; height:.15em; color:#dca6ed; overflow:visible; }
+.qualityDescription { max-width:33ch; margin-top:20px; color:#626267; font-size:16px; line-height:1.5; letter-spacing:-.02em; }
+.thread { position:absolute; bottom:0; right:12%; width:140px; height:auto; color:#9951ac; }
+.qualitySheet { min-width:0; padding:20px 24px 18px; border:1px solid #e5e5ea; background:#fff; border-radius:22px; }
+.sheetHeader { display:flex; align-items:center; justify-content:space-between; gap:20px; padding-bottom:14px; border-bottom:1px solid #e5e5ea; font-size:12px; line-height:1.5; font-weight:500; }
+.sheetHeader > svg { width:34px; height:34px; flex-shrink:0; }
+.qualityList { list-style:none; margin:0; padding:0; }
+.qualityList > li { border-bottom:1px solid #e5e5ea; }
+.qualityList summary { gap:12px; min-height:52px; padding-block:12px; }
+.qualityList h3 { font-size:18px; line-height:1.3; font-weight:500; letter-spacing:-.025em; }
+.qualityCheck { display:grid; place-items:center; width:22px; height:22px; border-radius:50%; border:1px solid #d2d2d7; flex-shrink:0; transition:background .25s,border-color .25s; }
+.qualityCheck > svg { width:14px; height:14px; }
+.qualityList details[open] .qualityCheck { background:#a1ff62; border-color:#a1ff62; }
+.qualityList details > p { margin:-1px 0 16px 34px; max-width:43ch; font-size:14px; line-height:1.5; color:#626267; }
+@media(hover:hover) and (pointer:fine) {
+  .qualityList summary:hover .qualityCheck { background:#a1ff62; border-color:#a1ff62; }
+}
+@media(max-width:899px) {
+  .advantages { padding-top:40px; padding-bottom:44px; }
+  .qualityLayout { gap:32px; }
+  .qualityIntro h2 { font-size:38px; }
+  .qualityDescription { font-size:15px; }
+  .qualitySheet { padding-inline:20px; }
+  .qualityList summary { gap:10px; }
+  .qualityList h3 { font-size:16px; }
+  .qualityList details > p { margin-left:32px; }
+}
+@media(max-width:599px) {
+  .advantages { padding-block:32px; }
+  .qualityLayout { grid-template-columns:minmax(0,1fr); gap:24px; }
+  .qualityIntro { padding-bottom:0; }
+  .qualityIntro h2 { font-size:clamp(32px,9vw,38px); }
+  .qualityDescription { max-width:35ch; margin-top:16px; }
+  .thread { display:none; }
+  .qualitySheet { padding:18px 18px 16px; }
+  .sheetHeader { padding-bottom:12px; }
+  .qualityList summary { min-height:52px; gap:9px; }
+  .qualityList h3 { font-size:16px; }
+  .qualityList details > p { margin-left:31px; }
+  .qualityList .plus { width:16px; }
+}
+@media(max-width:359px) {
+  .qualitySheet { padding-inline:16px; }
+  .qualityList h3 { font-size:15px; }
+  .qualityList summary { gap:8px; }
+  .qualityList details > p { margin-left:30px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .plus::after,.qualityCheck { transition:none; }
+}

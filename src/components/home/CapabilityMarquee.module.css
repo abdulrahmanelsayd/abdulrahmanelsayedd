@@ -1,0 +1,31 @@
+.frame { padding: 0 16px; background: #fff; color: #1d1d1f; }
+.band { display: flex; align-items: center; height: 80px; border: 1px solid #e8e8ed; border-radius: 24px; overflow: hidden; }
+.viewport { flex: 1; min-width: 0; height: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; mask-image: linear-gradient(90deg, transparent, #000 32px, #000 calc(100% - 32px), transparent); }
+.viewport:focus-visible { outline: 2px solid #0071e3; outline-offset: -4px; }
+.track { display: flex; width: max-content; height: 100%; align-items: center; }
+.group { display: flex; align-items: center; flex-shrink: 0; gap: 48px; width: max-content; margin: 0; padding: 0 48px 0 0; list-style: none; }
+.group li { display: flex; align-items: center; gap: 48px; white-space: nowrap; font-weight: 600; font-size: 24px; line-height: 1.3; }
+.group svg { width: 24px; height: 24px; }
+.control { flex: 0 0 64px; height: 44px; border-left: 1px solid #e8e8ed; place-items: center; }
+.control[hidden] { display: none; }
+.control:not([hidden]) { display: grid; }
+.control button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: #fff; cursor: pointer; }
+.control button:hover { background: #f5f5f7; }
+.control button:focus-visible { outline: 2px solid #0071e3; outline-offset: -2px; }
+.control svg { width: 20px; height: 20px; }
+.frame[data-marquee-enhanced] .viewport { overflow: hidden; }
+@media (max-width: 767px) {
+  .frame { padding-inline: 8px; }
+  .band { height: 64px; border-radius: 18px; }
+  .viewport { mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent); }
+  .group { gap: 32px; padding-right: 32px; }
+  .group li { gap: 32px; font-size: 18px; }
+  .group svg { width: 20px; height: 20px; }
+  .control { flex-basis: 56px; }
+}
+@media (max-height: 520px) and (min-width: 768px) { .frame { padding-inline: 12px; } }
+@media (prefers-reduced-motion: reduce) {
+  .frame[data-marquee-enhanced] .viewport { overflow-x: auto; }
+  .frame .track { transform: none !important; }
+  .frame [data-marquee-clone], .frame .control { display: none; }
+}

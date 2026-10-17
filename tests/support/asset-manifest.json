@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "file": "public/images/me1.webp",
+      "bytes": 111762,
+      "sha256": "39953a85cece467b689fa9a48f9e462b563a5e5cc0118eff3fc94ec726fa0a17",
+      "format": "webp",
+      "width": 1191,
+      "height": 1321
+    },
+    {
+      "file": "public/images/me2.webp",
+      "bytes": 141216,
+      "sha256": "751fbfa4a5131ca7f3eccd650482acc6df9d03acf4cf108f24bc5776610ac311",
+      "format": "webp",
+      "width": 1191,
+      "height": 1321
+    },
+    {
+      "file": "public/images/projects/rifq-shop.webp",
+      "bytes": 62034,
+      "sha256": "0543456211d82891388d8fdd5baf8c7ba930e92fba213e79b9d2c1ac98a4f810",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/jood-plus.webp",
+      "bytes": 83458,
+      "sha256": "9eb02e51fbb81913b0d6f19c7142a786318e0efa0d3f96b689af008bad190199",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/dehaz-skincare.webp",
+      "bytes": 111886,
+      "sha256": "032bea2320fefbac37d9b21d6e5a98da5e0f4fc38033e5a58545dd1f05e5a74f",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/next-gen.webp",
+      "bytes": 61714,
+      "sha256": "f3de63f29d6468f7b7a926630c1cb2ddf142e620c2df88aac312d349f4eb9613",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/al-wesam.webp",
+      "bytes": 113614,
+      "sha256": "c0be287e7690356e32450bea9b6a38d10638ba606eb9d30eb841d0e4e3a2ab01",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/goat.webp",
+      "bytes": 61108,
+      "sha256": "16a358947e4f8a773e100186a9c79d13c599865fda35caeefef5c01393fa4a37",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/lawrence-shop.webp",
+      "bytes": 53938,
+      "sha256": "8bcd42c25bac25b4944e922cce144768d0c43dc62876a41f4ebb5ef790e80e0a",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/proline.webp",
+      "bytes": 33696,
+      "sha256": "e8cba6436ac695b16cb1d76457f1f4eb647724aeafe61e5e6b52737c1f65ed27",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/sonoa.webp",
+      "bytes": 37086,
+      "sha256": "7287c36e0f39f1330a2b7a83a1132681603715d4ff5804783e105f81318cab7b",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/images/projects/u-richi.webp",
+      "bytes": 32192,
+      "sha256": "dd5b0e0ac42051a81a581e9925cf3567f598fb09b37b394c4e138bb320b371c4",
+      "format": "webp",
+      "width": 760,
+      "height": 1140
+    },
+    {
+      "file": "public/graphics/truus-projects/type-icon.svg",
+      "bytes": 1864,
+      "sha256": "f001e15dc9de1729c093bd56c4ca721f6bac47c10564a4225db800119794c530",
+      "format": "svg",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "file": "public/graphics/truus-projects/sticker-0.svg",
+      "bytes": 5028,
+      "sha256": "64bdd40649e645df8f7511d08d6e4b8a18116a61c1004a6480eefac5a5e8885c",
+      "format": "svg",
+      "width": 145,
+      "height": 138
+    },
+    {
+      "file": "public/graphics/truus-projects/sticker-1.svg",
+      "bytes": 15999,
+      "sha256": "fff588855c569a5b151d729be1a37aa24c6b48ff1ed8e224133cb4d6342930ec",
+      "format": "svg",
+      "width": 158,
+      "height": 144
+    },
+    {
+      "file": "public/graphics/truus-projects/sticker-2.svg",
+      "bytes": 8442,
+      "sha256": "ac80e580ad1955d6518d2de0fbe8c8c86f97678eec0e6ecc14338485790340ac",
+      "format": "svg",
+      "width": 159,
+      "height": 140
+    },
+    {
+      "file": "public/graphics/truus-projects/sticker-3.svg",
+      "bytes": 7096,
+      "sha256": "f09abb9f27f1023fbfe35ecc8e15a17ab1548ddecd7466f2e6d8cecf71bf533e",
+      "format": "svg",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "file": "public/graphics/whatsapp-qr.svg",
+      "bytes": 1368,
+      "sha256": "e01ea0e36e65458a4e4571221dfb0dfda0fe8a146963a2cb7ddf3db64074fafd",
+      "format": "svg",
+      "width": 33,
+      "height": 33
+    },
+    {
+      "file": "public/favicon.ico",
+      "bytes": 3180,
+      "sha256": "cc8351d4b7bedc2c8e4896dfa5a3ae856e027c24ad6014c7cb4a3ab2b0719bb9",
+      "format": "ico",
+      "width": 48,
+      "height": 48
+    },
+    {
+      "file": "public/icon.svg",
+      "bytes": 878,
+      "sha256": "0337cb43d2554c2ad1d06be9db1f1f9c87d84ebc1e00c2f9b38fa9ed1a68571e",
+      "format": "svg",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "file": "public/apple-icon.png",
+      "bytes": 6211,
+      "sha256": "a1ee212fa963dc1e84c43799f627a64160afb5d4c37b0ffaa7b1750afdc49d93",
+      "format": "png",
+      "width": 180,
+      "height": 180
+    },
+    {
+      "file": "public/images/social-preview.jpg",
+      "bytes": 40198,
+      "sha256": "17cfec29c2d3f362de65b469e526f7ad13a26cb4fefa0479542ed86196b9c362",
+      "format": "jpeg",
+      "width": 1200,
+      "height": 630
+    },
+    {
+      "file": "src/assets/fonts/Chillax-Variable.woff2",
+      "bytes": 55640,
+      "sha256": "4554fa2df4959226daea1f25a22cd54a7e5d2539e59769d0071547713d416106",
+      "format": "woff2"
+    },
+    {
+      "file": "src/assets/fonts/LICENSE.txt",
+      "bytes": 12734,
+      "sha256": "145e7fe2429a3336ba215c070ef722000e01348a3e1baaa127e871bb5012f554",
+      "format": "text"
+    },
+    {
+      "file": "src/assets/fonts/Epilogue.woff2",
+      "bytes": 80868,
+      "sha256": "98a784b48c43b41a48d129773aaf6dccde19b01cf173e514e6f76b44b6d393f3",
+      "format": "woff2"
+    },
+    {
+      "file": "src/assets/fonts/InstrumentSerif-Italic.woff2",
+      "bytes": 28096,
+      "sha256": "4f7aacc18d491dea8778bbc591db87b9455625899ed5f913957e7fd82604c294",
+      "format": "woff2"
+    },
+    {
+      "file": "src/assets/fonts/Epilogue-hero.woff2",
+      "bytes": 11752,
+      "sha256": "74fee5c2e56f6122aa572d2bf1fc00bd82c52b1159c0988b09fa41a83851144a",
+      "format": "woff2"
+    },
+    {
+      "file": "src/assets/fonts/InstrumentSerif-Italic-hero.woff2",
+      "bytes": 20512,
+      "sha256": "39142fd38aeef3e75a41aed09558d5d2f087d98e28b950243e9fdd4b328ccfc2",
+      "format": "woff2"
+    },
+    {
+      "file": "src/assets/fonts/Epilogue-OFL.txt",
+      "bytes": 4394,
+      "sha256": "95ebd6a2e4035b8398c83928fb85297b48441f27f405398c29b59aae899fc747",
+      "format": "text"
+    },
+    {
+      "file": "src/assets/fonts/InstrumentSerif-OFL.txt",
+      "bytes": 4405,
+      "sha256": "129ed7618959716959f2941fdd5b49e0ad6e6c1d78726761786a00253d865521",
+      "format": "text"
+    },
+    {
+      "file": "public/graphics/truus-projects/blob.svg",
+      "bytes": 1992,
+      "sha256": "0d710bf75959924bd6b61b42060321d8305c2dc49695d62e131c2363de1f0c94",
+      "format": "svg",
+      "width": 449,
+      "height": 458
+    },
+    {
+      "file": "public/graphics/truus-projects/cursor-drag.svg",
+      "bytes": 2834,
+      "sha256": "9495bbb81326c920577eb1db918d02dbf082797a73741dedcd0223a3f1245b87",
+      "format": "svg",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "file": "public/graphics/truus-projects/cursor-dragging.svg",
+      "bytes": 3757,
+      "sha256": "0feca2c9fbe081b3ac85e133f50e05978cc05d898e05116f67983a427b66e552",
+      "format": "svg",
+      "width": 36,
+      "height": 37
+    },
+    {
+      "file": "public/images/me1-hero-h03.webp",
+      "bytes": 455896,
+      "sha256": "881c7fd8d195da501a0579660a34a5facc5b78f150806b78dc9978da7506f3d5",
+      "format": "webp",
+      "width": 1191,
+      "height": 1321
+    },
+    {
+      "file": "public/images/mee.png",
+      "bytes": 1422828,
+      "sha256": "b92a4e4bef57a24a919316a86123f17c5c5f6607c4334f8d2d7993522fd2fee0",
+      "format": "png",
+      "width": 1191,
+      "height": 1321
+    },
+    {
+      "file": "public/images/mee-hero-h03-c01.webp",
+      "bytes": 474746,
+      "sha256": "013bb90fd1a9f889dc98366d71cc4f9e230b9e0b30422a4537c125dd01d9d319",
+      "format": "webp",
+      "width": 1191,
+      "height": 1321
+    }
+  ]
+}

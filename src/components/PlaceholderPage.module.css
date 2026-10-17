@@ -1,0 +1,4 @@
+.page { min-height: 110vh; max-width: 68.75rem; margin-inline: auto; padding: 10rem 3.125rem 6rem; }
+.page h1 { font-size: clamp(3rem,7vw,6rem); line-height: 1.1; font-weight: 500; margin-block: 1rem; }
+.eyebrow { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+@media(max-width:719px) { .page { padding-inline: 1.25rem; } }

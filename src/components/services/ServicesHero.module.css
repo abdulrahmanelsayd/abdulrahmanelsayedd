@@ -1,0 +1,56 @@
+.hero { --title-size:clamp(170px,min(19vw,32svh),280px); padding:clamp(112px,16svh,136px) clamp(24px,6vw,110px) 36px; background:#000; color:#f0ebe6; overflow:clip; }
+.container { max-width:1100px; margin-inline:auto; }
+.prelude { display:flex; align-items:center; gap:20px; width:fit-content; margin:20px 0 0 8%; font-size:30px; line-height:1; font-weight:550; letter-spacing:-.04em; }
+.prelude > svg { width:104px; height:40px; color:#f0befa; }
+.playground { position:relative; display:flex; align-items:center; justify-content:center; width:100%; height:calc(var(--title-size) * .85 + 42px); margin-top:2px; padding:0; border:0; background:transparent; color:inherit; isolation:isolate; }
+.playground:focus-visible { outline:2px solid #a1ff62; outline-offset:6px; border-radius:12px; }
+.word { position:relative; display:flex; align-items:flex-end; gap:.015em; width:fit-content; font-size:var(--title-size); line-height:.85; font-weight:650; letter-spacing:-.025em; }
+.letter { position:relative; display:block; flex:none; transform-origin:50% 75%; }
+.u { color:#82a0ff; }
+.eyes { position:absolute; bottom:.08em; left:12%; width:76%; height:auto; overflow:visible; pointer-events:none; }
+.dot { display:block; flex-shrink:0; width:.09em; height:.09em; margin:0 0 .045em .02em; border-radius:50%; background:#f0befa; }
+.outline { position:absolute; left:0; top:0; display:none; z-index:1; border:1.5px solid #a1ff62; pointer-events:none; }
+.outline > i { position:absolute; width:7px; height:7px; border:1.5px solid #a1ff62; background:#000; }
+.outline > i:nth-child(1) { top:-4px; left:-4px; }
+.outline > i:nth-child(2) { top:-4px; right:-4px; }
+.outline > i:nth-child(3) { bottom:-4px; right:-4px; }
+.outline > i:nth-child(4) { bottom:-4px; left:-4px; }
+.hero[data-services-hero-ready="true"] .outline { display:block; }
+.playHint { position:absolute; right:0; bottom:0; display:none; align-items:center; gap:10px; font-size:11px; line-height:1.5; font-weight:500; color:#bcb8b4; }
+.hero[data-services-hero-ready="true"] .playHint { display:flex; }
+.touchHint { display:none; }
+.bottom { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:20px; }
+.bottom > p { color:#bcb8b4; font-size:17px; line-height:1.5; letter-spacing:-.025em; }
+.explore { display:flex; align-items:center; gap:22px; min-height:48px; padding:5px 6px 5px 20px; border:1px solid #746d69; border-radius:40px; color:#f0ebe6; font-size:14px; font-weight:500; white-space:nowrap; text-decoration:none; }
+.explore > span { display:grid; place-items:center; width:36px; height:36px; border-radius:50%; background:#a1ff62; color:#161313; }
+.explore:focus-visible { outline:2px solid #a1ff62; outline-offset:5px; }
+@media(max-width:1023px) {
+  .hero { --title-size:clamp(170px,24vw,240px); padding-top:120px; padding-bottom:32px; }
+  .prelude { font-size:28px; margin-top:18px; }
+  .prelude > svg { width:96px; height:38px; }
+  .bottom > p { font-size:16px; }
+}
+@media(max-width:599px) {
+  .hero { --title-size:calc((100vw - clamp(48px,12vw,220px)) * .37); padding-top:104px; padding-bottom:30px; }
+  .prelude { margin:18px 0 0; gap:16px; font-size:25px; }
+  .prelude > svg { width:84px; height:33px; }
+  .playground { height:calc(var(--title-size) * .85 + 40px); }
+  .outline > i { width:6px; height:6px; }
+  .playHint { gap:8px; font-size:10px; }
+  .playHint > svg { width:16px; height:16px; }
+  .bottom { flex-direction:column; align-items:flex-start; gap:16px; margin-top:20px; }
+  .bottom > p { font-size:15px; }
+  .explore { gap:18px; padding-left:18px; font-size:13px; }
+}
+@media(hover:none) or (pointer:coarse) {
+  .mouseHint { display:none; }
+  .touchHint { display:inline; }
+}
+
+.explore > span > svg { transform:rotate(90deg); }
+.outline { transition:transform 320ms cubic-bezier(.22,1,.36,1),width 320ms cubic-bezier(.22,1,.36,1),height 320ms cubic-bezier(.22,1,.36,1); }
+.hero[data-services-hero-playing="true"] .outline { transition:none; }
+.hero [data-services-hero-pupils] { transition:transform 300ms cubic-bezier(.22,1,.36,1); }
+@media(prefers-reduced-motion:reduce) {
+  .outline,.hero [data-services-hero-pupils] { transition:none; }
+}

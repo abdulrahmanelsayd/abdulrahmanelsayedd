@@ -1,0 +1,10 @@
+.logo { display:block; width:100%; height:auto; flex-shrink:0; overflow:visible; }
+.underline { stroke-dasharray:1 1; stroke-dashoffset:0; }
+
+@media(prefers-reduced-motion:no-preference) {
+  [data-brand-interactive]:focus-visible .underline { animation:signatureFinish .7s cubic-bezier(.25,.1,.25,1); }
+  @media(hover:hover) and (pointer:fine) {
+    [data-brand-interactive]:hover .underline { animation:signatureFinish .7s cubic-bezier(.25,.1,.25,1); }
+  }
+}
+@keyframes signatureFinish { from { stroke-dashoffset:1; } to { stroke-dashoffset:0; } }
