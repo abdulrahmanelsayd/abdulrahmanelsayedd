@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import { getImageProps } from "next/image";
+import { heroPortrait } from "../../content/assets";
 import { identity } from "../../content/identity";
 import { HeroMotion } from "./HeroMotion";
 import styles from "./Hero.module.css";
@@ -10,17 +10,10 @@ const heroFont = localFont({ src: "../../assets/fonts/Chillax-Variable.woff2", w
 const words = identity.name.split(" ");
 const roleLines = identity.role.split(" & ");
 export function Hero() {
-  const { props: portrait } = getImageProps({
-    src: "/images/mee-hero-h03-c01.webp", width: 1191, height: 1321,
-    alt: "Portrait of Abdulrahman Elsayed", loading: "eager", fetchPriority: "high", quality: 75,
-    // The native portrait stays below 80 KiB. A fixed hint avoids a second mobile
-    // request when the preload scanner resolves viewport-height units differently.
-    sizes: "1191px",
-  });
   return <HeroMotion className={`${styles.hero} ${heroFont.variable}`}>
     <div className={styles.photograph} data-hero-photo-layer>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img {...portrait} alt={portrait.alt} className={styles.portrait} data-hero-photo draggable={false} />
+      <img src={heroPortrait.src} width={heroPortrait.width} height={heroPortrait.height} alt="Portrait of Abdulrahman Elsayed" loading="eager" fetchPriority="high" decoding="async" className={styles.portrait} data-hero-photo draggable={false} />
     </div>
     <h1 id="home-hero-heading" className={styles.name}>
       <span className="sr-only">{identity.name} —</span>

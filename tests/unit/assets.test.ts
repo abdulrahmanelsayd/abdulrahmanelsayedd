@@ -4,7 +4,7 @@ import { lstat, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
 import { projects } from "../../src/content/projects.ts";
-import { portraits, siteIcons, socialPreview } from "../../src/content/assets.ts";
+import { portraits, heroPortrait, siteIcons, socialPreview } from "../../src/content/assets.ts";
 import { inspectAsset, type AssetMetadata } from "../support/asset-metadata.ts";
 
 interface AssetRecord extends AssetMetadata { file: string; bytes: number; sha256: string }
@@ -27,7 +27,7 @@ for (const expected of manifest.files) {
 }
 
 test("every project preview and portrait points to an inspected asset with matching metadata", () => {
-  for (const image of [...projects.map(project => project.preview), ...Object.values(portraits)]) {
+  for (const image of [...projects.map(project => project.preview), ...Object.values(portraits), heroPortrait]) {
     const asset = manifest.files.find(item => item.file === "public" + image.src);
     assert.ok(asset, image.src);
     assert.equal(asset.width, image.width);

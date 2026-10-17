@@ -1,5 +1,6 @@
 import { test, expect, type Page, type TestInfo } from "@playwright/test";
 import { identity } from "../../src/content/identity";
+import { heroPortrait } from "../../src/content/assets";
 const routes = ["/","/work","/services","/contact","/about","/release-missing-page"];
 const failures = new WeakMap<Page,string[]>();
 function watch(page:Page,scriptsDisabled=false) {
@@ -95,18 +96,18 @@ test("Hero portrait loads once within its transfer budget",async({page},info)=>{
   const requests:string[]=[];
   page.on("request",request=>{
     const url=new URL(request.url());
-    if(request.resourceType()==="image" && url.searchParams.get("url")==="/images/mee-hero-h03-c01.webp") requests.push(request.url());
+    if(request.resourceType()==="image" && url.pathname===heroPortrait.src) requests.push(request.url());
   });
   const response=page.waitForResponse(response=>{
     const url=new URL(response.url());
-    return response.request().resourceType()==="image" && url.searchParams.get("url")==="/images/mee-hero-h03-c01.webp";
+    return response.request().resourceType()==="image" && url.pathname===heroPortrait.src;
   });
   await page.goto("/"); await idle(page);
   const portrait=page.locator("[data-hero-photo]");
   const geometry=await portrait.evaluate(async(element)=>{
     const image=element as HTMLImageElement;
     await image.decode();
-    return {width:image.naturalWidth,height:image.naturalHeight,currentSrc:image.currentSrc,srcSet:image.srcset,sizes:image.sizes};
+    return {width:image.naturalWidth,height:image.naturalHeight,currentSrc:image.currentSrc};
   });
   const imageResponse=await response,bytes=(await imageResponse.body()).length;
   expect(imageResponse.status()).toBe(200);
@@ -114,8 +115,8 @@ test("Hero portrait loads once within its transfer budget",async({page},info)=>{
   expect(geometry.width).toBeGreaterThan(0);
   expect(geometry.height).toBeGreaterThan(0);
   expect(requests).toEqual([geometry.currentSrc]);
-  const preloads=await page.locator('head link[rel="preload"][as="image"]').evaluateAll(elements=>elements.map(element=>({srcSet:element.getAttribute("imagesrcset"),sizes:element.getAttribute("imagesizes")})));
-  expect(preloads.filter(preload=>preload.srcSet===geometry.srcSet && preload.sizes===geometry.sizes)).toHaveLength(1);
+  const preloads=await page.locator('head link[rel="preload"][as="image"]').evaluateAll(elements=>elements.map(element=>element.getAttribute("href")));
+  expect(preloads.filter(href=>href===heroPortrait.src)).toHaveLength(1);
   await expect(portrait).toHaveAttribute("fetchpriority","high");
   await info.attach("hero-image-transfer",{body:JSON.stringify({bytes,requests,width:geometry.width,height:geometry.height}),contentType:"application/json"});
 });

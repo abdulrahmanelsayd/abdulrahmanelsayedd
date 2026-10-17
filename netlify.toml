@@ -5,3 +5,8 @@
 [build.environment]
   NPM_VERSION = "11.19.0"
   SITE_URL = "https://abdulrahmanelsayed.xyz"
+
+[[headers]]
+  for = "/images/mee-hero-1f3f5b477899.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

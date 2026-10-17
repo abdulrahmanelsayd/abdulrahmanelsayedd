@@ -272,6 +272,14 @@
       "format": "webp",
       "width": 1191,
       "height": 1321
+    },
+    {
+      "file": "public/images/mee-hero-1f3f5b477899.webp",
+      "bytes": 55042,
+      "sha256": "1f3f5b477899519dd7786f9f0943cbf2f4f417f3e57637d054ae4c687fc82f87",
+      "format": "webp",
+      "width": 1191,
+      "height": 1321
     }
   ]
 }

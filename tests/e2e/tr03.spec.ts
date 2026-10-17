@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { heroPortrait } from '../../src/content/assets';
 
 const idle = async (page: Page) => {
   await expect(page.locator('[data-page-curtain]')).toHaveAttribute('data-phase', 'idle', { timeout: 12000 });
@@ -57,7 +58,7 @@ test('Escape after adoption releases the same lease once', async ({ page }) => {
 test('a delayed hero image stays covered beyond greetings and decodes before reveal', async ({ page }) => {
   let release!: () => void;
   const gate = new Promise<void>(resolve => { release = resolve; });
-  await page.route('**/_next/image?*', async route => { if (route.request().url().includes('mee-hero')) await gate; await route.continue(); });
+  await page.route('**'+heroPortrait.src, async route => { await gate; await route.continue(); });
   await page.goto('/', { waitUntil: 'commit' });
   await expect(page.locator('[data-curtain-words]')).toHaveText('Hallo', { timeout: 6000 });
   await page.waitForTimeout(650);
@@ -67,7 +68,7 @@ test('a delayed hero image stays covered beyond greetings and decodes before rev
 });
 test('failed image uses the original bounded rescue without a reveal', async ({ page }) => {
   const release = await holdBundles(page);
-  await page.route('**/_next/image?*', route => route.request().url().includes('mee-hero') ? route.abort('failed') : route.continue());
+  await page.route('**'+heroPortrait.src, route => route.abort('failed'));
   await page.goto('/', { waitUntil: 'commit' });
   await expect(page.locator('[data-curtain-words]')).toHaveText('Hallo', { timeout: 6000 });
   await page.waitForTimeout(1200); release(); await page.waitForLoadState(); await idle(page);
