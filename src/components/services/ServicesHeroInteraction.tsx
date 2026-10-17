@@ -35,7 +35,7 @@ export function ServicesHeroInteraction() {
     };
     const activity = observeServicesActivity(root, sync);
     const measure = () => {
-      measuredRAF = 0; if (!live) return;
+      measuredRAF = 0; if (!live || !stage.isConnected) return;
       if (playing) stop();
       const b = stage.getBoundingClientRect(); bounds = { left: b.left, top: b.top, width: b.width, height: b.height };
       let context: CanvasRenderingContext2D | null = null;
