@@ -31,7 +31,7 @@ for (const size of sizes) test(`H03 Dennis composition ${size.width}x${size.heig
   expect(g.photo.height / g.hero.height).toBeCloseTo(mobile ? .98 : 1, 3);
   expect(g.layer.y).toBe(0);
   expect(g.radius).toBe('0px'); expect(g.filter).toBe('none'); expect(g.mask).toBe('none');
-  expect(g.font.toLowerCase()).toContain('hero'); expect(g.weight).toBe('450'); expect(g.background).toBe('rgb(153, 157, 158)');
+  expect(g.font.toLowerCase()).toContain('hero'); expect(g.weight).toBe('450'); expect(g.background).toBe('rgb(140, 144, 145)');
   await expect(page.locator('[data-floating-whatsapp]')).toHaveAttribute('data-blocked', 'true');
   if (size.width === 1440 && size.height === 900) { expect(g.size).toBeCloseTo(172.8,1); expect(g.roleSize).toBeCloseTo(33.12, 2); expect(g.heading.bottom).toBeCloseTo(846, 0); }
 });

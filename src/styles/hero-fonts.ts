@@ -5,6 +5,7 @@ export const epilogue = localFont({
   weight: "900",
   style: "normal",
   display: "swap",
+  preload: false,
   variable: "--font-epilogue",
 });
 
@@ -13,5 +14,6 @@ export const instrumentSerif = localFont({
   weight: "400",
   style: "italic",
   display: "swap",
+  preload: false,
   variable: "--font-instrument-serif",
 });

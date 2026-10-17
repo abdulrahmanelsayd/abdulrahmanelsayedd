@@ -91,6 +91,28 @@ test("Home → Work → Services → Contact → About → Home, menu focus and 
   await page.goBack(); await expect(page.locator("main")).toHaveAttribute("data-route","/about"); await idle(page);
   await page.goForward(); await expect(page.locator("main")).toHaveAttribute("data-route","/"); await idle(page); await overflow(page);
 });
+test("Hero text meets contrast requirements on its gray surface",async({page})=>{
+  await page.goto("/"); await idle(page);
+  const samples=await page.locator("#home-hero-heading,[data-hero-role]").evaluateAll(elements=>elements.map(element=>{
+    const style=getComputedStyle(element),surface=getComputedStyle(element.closest("section")!);
+    return {color:style.color,background:surface.backgroundColor,size:parseFloat(style.fontSize),weight:parseFloat(style.fontWeight)};
+  }));
+  const luminance=(color:string)=>{
+    const channels=color.match(/[\d.]+/g)!.slice(0,3).map(value=>{
+      const channel=Number(value)/255;
+      return channel<=.04045?channel/12.92:((channel+.055)/1.055)**2.4;
+    });
+    return channels.reduce((sum,value,index)=>sum+value*[.2126,.7152,.0722][index],0);
+  };
+  expect(samples).toHaveLength(2);
+  for(const sample of samples) {
+    const foreground=luminance(sample.color),background=luminance(sample.background);
+    const contrast=(Math.max(foreground,background)+.05)/(Math.min(foreground,background)+.05);
+    const large=sample.size>=24||(sample.size>=18.667&&sample.weight>=700);
+    expect(contrast).toBeGreaterThanOrEqual(large?3:4.5);
+  }
+});
+
 test("About history restores the departure position and Home returns to the top",async({page})=>{
   await page.goto("/about"); await idle(page);
   await page.evaluate(()=>document.fonts.ready);

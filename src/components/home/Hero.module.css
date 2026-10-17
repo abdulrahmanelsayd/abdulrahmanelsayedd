@@ -9,7 +9,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: minmax(112px, 1fr) auto minmax(32px, .6fr) auto 6svh;
   overflow: clip;
-  background: #999d9e;
+  background: #8c9091;
   color: #fff;
   font-family: var(--font-hero), Arial, sans-serif;
   font-weight: 450;
@@ -55,7 +55,7 @@
 }
 /* Natural rows let larger text grow the section instead of clipping content. */
 @media (max-height: 550px) {
-  .hero { min-height: max(100svh, 400px); padding-bottom: 28px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 110px auto 1fr; row-gap: 36px; --hero-role-size: clamp(18px, 2.3vw, 26px); }
+  .hero { min-height: max(100svh, 400px); padding-bottom: 28px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 110px auto 1fr; row-gap: 36px; --hero-role-size: clamp(24px, 2.3vw, 26px); }
   .name { grid-column: 1 / -1; grid-row: 3; font-size: clamp(64px, 18svh, 96px); }
   .description { grid-column: 2; grid-row: 2; align-self: start; justify-self: end; margin-left: 0; margin-right: var(--hero-gutter); }
   .arrow { top: -36px; }
