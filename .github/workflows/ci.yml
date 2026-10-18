@@ -54,4 +54,5 @@ jobs:
           curl --fail --silent --output /dev/null http://127.0.0.1:3000/
           npm run test:release -- --project=desktop --project=mobile
           npx playwright test --project=regression tests/e2e/tr03.spec.ts tests/e2e/tr03-c01.spec.ts
+          npx playwright test --project=regression tests/e2e/shared-ui.spec.ts tests/e2e/navigation-portrait.spec.ts
           npm run test:gallery

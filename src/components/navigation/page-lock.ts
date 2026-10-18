@@ -14,13 +14,17 @@ export function lockScroll() {
   // Collect geometry before pausing Lenis mutates root classes. All lock writes
   // then share the menu commit instead of forcing a style pass between them.
   const scrollbar = first ? Math.max(0, window.innerWidth - html.clientWidth) : 0;
-  const padding = first ? parseFloat(getComputedStyle(body).paddingRight) || 0 : 0;
+  const padding = first && scrollbar > 0 ? parseFloat(getComputedStyle(body).paddingRight) || 0 : 0;
   const resumeScroll = pauseScrollForMenu();
   if (first) {
-    html.style.setProperty("--navigation-gutter", `${scrollbar}px`);
     body.style.setProperty("overflow", "hidden");
-    body.style.setProperty("width", "100%");
-    body.style.setProperty("padding-right", `${padding + scrollbar}px`);
+    // Overlay scrollbars consume no width. Avoid invalidating the root custom
+    // property and body geometry when there is no gutter to compensate.
+    if (scrollbar > 0) {
+      html.style.setProperty("--navigation-gutter", `${scrollbar}px`);
+      body.style.setProperty("width", "100%");
+      body.style.setProperty("padding-right", `${padding + scrollbar}px`);
+    }
     restoreBody = () => {
       previous.forEach(({ name, value, priority }) => {
         if (value) body.style.setProperty(name, value, priority); else body.style.removeProperty(name);
