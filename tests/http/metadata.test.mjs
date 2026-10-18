@@ -21,8 +21,8 @@ const pages = [
   { route: "/services", title: "Services | Abdulrahman Elsayed", description: "Web design and development for business websites and online stores. Responsive interfaces, CMS, custom features, integrations and technical SEO, from brief to launch." },
   { route: "/contact", title: "Contact | Abdulrahman Elsayed", description: "Discuss a website project with Abdulrahman Elsayed. Prepare an email draft, find contact details and answers to common questions." },
 ];
-const image = new URL("/images/social-preview.jpg", site).href;
-const imageAlt = "Abdulrahman Elsayed — Web Designer & Developer based in Egypt, with the AE monogram.";
+const image = new URL("/images/social-preview-36ad02869f27.jpg", site).href;
+const imageAlt = "Abdulrahman Elsayed — web designer and developer, with his portrait and signature.";
 const values = (dom, selector, attribute) => dom.querySelectorAll(selector).map(element => element.getAttribute(attribute));
 
 async function request(route, name, userAgent = "Mozilla/5.0 ReleaseMetadataCheck") {
@@ -63,6 +63,7 @@ for (const agent of ["Mozilla/5.0 ReleaseMetadataCheck", "Twitterbot/1.0"]) {
         ["og:title", page.title], ["og:description", page.description],
         ["og:image", image], ["og:image:alt", imageAlt], ["og:type", "website"],
         ["og:site_name", "Abdulrahman Elsayed"], ["og:locale", "en_US"],
+        ["og:image:width", "1200"], ["og:image:height", "630"], ["og:image:type", "image/jpeg"],
       ]) assert.deepEqual(values(dom, `meta[property="${key}"]`, "content"), [expected], key);
       assert.ok(values(dom, 'meta[name="robots"]', "content").every(value => !/\bnoindex\b/i.test(value)));
     });
@@ -99,13 +100,14 @@ test("a missing page remains HTTP 404 and noindex without a home canonical", asy
 });
 
 test("the public share image is the delivered 1200x630 JPEG", async () => {
-  const response = await fetch(new URL("/images/social-preview.jpg", preview));
+  const response = await fetch(new URL("/images/social-preview-36ad02869f27.jpg", preview));
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type"), /^image\/jpeg\b/i);
   const bytes = Buffer.from(await response.arrayBuffer());
   const { default: sharp } = await import("sharp");
   const { readFile } = await import("node:fs/promises");
-  assert.deepEqual(bytes, await readFile(new URL("../../public/images/social-preview.jpg", import.meta.url)));
+  assert.deepEqual(bytes, await readFile(new URL("../../public/images/social-preview-36ad02869f27.jpg", import.meta.url)));
   const metadata = await sharp(bytes).metadata();
   assert.equal(metadata.width, 1200); assert.equal(metadata.height, 630);
+  assert.ok(bytes.length < 150_000, "Keep the crawler image under 150KB");
 });

@@ -10,3 +10,8 @@
   for = "/images/mee-hero-1f3f5b477899.webp"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/social-preview-36ad02869f27.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
