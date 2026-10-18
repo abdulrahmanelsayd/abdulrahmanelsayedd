@@ -78,7 +78,9 @@ test('native held logo activation survives the closing width transition',async({
 });
 
 test('tablet retains the existing inside Contact action when the portrait card is hidden',async({page})=>{
-  await page.setViewportSize({width:768,height:1024});await page.goto('/work');await idle(page);await toggle(page).click();
-  await page.locator('[data-menu-panel] a[href="/contact"]:visible').click();
-  await expect(page.locator('main')).toHaveAttribute('data-route','/contact');await idle(page);
+  for(const viewport of [{width:768,height:1024},{width:844,height:390}]){
+    await page.setViewportSize(viewport);await page.goto('/work');await idle(page);await toggle(page).click();
+    await page.locator('[data-menu-panel] a[href="/contact"]:visible').click();
+    await expect(page.locator('main')).toHaveAttribute('data-route','/contact');await idle(page);
+  }
 });

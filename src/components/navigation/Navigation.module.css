@@ -762,7 +762,8 @@ a:focus-visible .underlined::before {
     padding: 0;
   }
   .mobileActions {
-    display: none;
+    display: flex;
+    grid-column: 1 / -1;
   }
   .header[data-open=true] .explore {
     transition-delay: .3s;
