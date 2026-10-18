@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       SITE_URL: https://abdulrahmanelsayed.xyz
@@ -57,3 +57,11 @@ jobs:
           npx playwright test --project=regression tests/e2e/tr03.spec.ts tests/e2e/tr03-c01.spec.ts
           npx playwright test --project=regression tests/e2e/shared-ui.spec.ts tests/e2e/navigation-portrait.spec.ts
           npm run test:gallery
+      - name: Preserve release test evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: chromium-release-${{ github.run_attempt }}
+          path: test-results/release/
+          retention-days: 3
+          if-no-files-found: ignore

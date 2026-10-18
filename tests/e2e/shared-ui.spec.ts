@@ -144,8 +144,28 @@ test("rapid reversals, resizing and reduced motion changes leave no locks or hid
 test("modified internal clicks open a native new tab without closing the menu", async ({ page, context }) => {
   await ready(page);
   await toggle(page).click();
+  await expect(toggle(page)).toHaveAttribute("aria-expanded", "true");
+  // This checks native modified-link semantics after the finite opening motion.
+  // Wait for its actual animations, rather than an arbitrary timeout or an
+  // accidental hit during the panel's delayed geometry changes.
+  await page.locator("[data-navigation-scope]").evaluate(async scope => {
+    await Promise.all(scope.getAnimations({ subtree: true })
+      .filter(animation => Number.isFinite(animation.effect?.getTiming().iterations))
+      .map(animation => animation.finished.catch(() => {})));
+  });
+  await page.evaluate(() => {
+    const clicks: Array<{ href: string | null; ctrl: boolean; prevented: boolean; trusted: boolean }> = [];
+    Object.assign(window, { testModifiedClicks: clicks });
+    document.addEventListener("click", event => {
+      const anchor = event.target instanceof Element ? event.target.closest("a") : null;
+      if (anchor) clicks.push({ href: anchor.getAttribute("href"), ctrl: event.ctrlKey, prevented: event.defaultPrevented, trusted: event.isTrusted });
+    });
+  });
   const newTab = context.waitForEvent("page");
   await panel(page).getByRole("link", { name: "About", exact: true }).click({ modifiers: ["Control"] });
+  expect(await page.evaluate(() => (window as unknown as {
+    testModifiedClicks: Array<{ href: string; ctrl: boolean; prevented: boolean; trusted: boolean }>;
+  }).testModifiedClicks)).toEqual([{ href: "/about", ctrl: true, prevented: false, trusted: true }]);
   const opened = await newTab;
   await opened.waitForLoadState();
   expect(opened.url()).toMatch(/\/about$/);

@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   compatibility:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -47,3 +47,11 @@ jobs:
             sleep 1
           done
           npx playwright test --config playwright.compatibility.config.ts --project=${{ matrix.browser }}-desktop --project=${{ matrix.browser }}-mobile-viewport
+      - name: Preserve compatibility evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: compatibility-${{ matrix.browser }}-${{ github.run_attempt }}
+          path: test-results/release/
+          retention-days: 3
+          if-no-files-found: ignore
