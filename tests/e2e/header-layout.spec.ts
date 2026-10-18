@@ -1,11 +1,12 @@
 import {expect, test, type Page} from "@playwright/test";
 import {identity} from "../../src/content/identity";
 import {menuRouteIds, getRoute} from "../../src/content/routes";
+import {waitForRuntime} from "../support/runtime-ready";
 
 const header=(page:Page)=>page.locator('[data-site-header]');
 const toggle=(page:Page)=>page.locator('[data-menu-toggle]');
 const logo=(page:Page)=>header(page).getByRole('link',{name:`${identity.name} — Home`,exact:true});
-async function idle(page:Page){await expect(page.locator('[data-page-curtain]')).toHaveAttribute('data-phase','idle');}
+async function idle(page:Page){await waitForRuntime(page);}
 async function composition(page:Page){
   await expect(logo(page)).toBeVisible(); await expect(toggle(page)).toBeVisible();
   const bounds=await header(page).evaluate(element=>{
@@ -34,7 +35,7 @@ for(const route of ['/','/work','/services','/contact','/about','/header-layout-
     const scrolled=await composition(page);
     expect(Math.abs(scrolled.brand.left-before.brand.left)).toBeLessThanOrEqual(.75);
     expect(Math.abs(scrolled.menu.left-before.menu.left)).toBeLessThanOrEqual(.75);
-    await toggle(page).focus(); await page.keyboard.press('Enter');
+    await toggle(page).focus(); await expect(toggle(page)).toBeFocused(); await page.keyboard.press('Enter');
     await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toBeVisible();
     await expect(page.locator('[data-page-content]')).toHaveAttribute('inert','');
     expect(await page.locator('[data-menu-panel] nav[aria-label="Explore"] > ul a').evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(menuRouteIds.map(id=>getRoute(id).href));
@@ -70,10 +71,10 @@ test('native held logo activation survives the closing width transition',async({
   await page.goto('/work');await idle(page);await toggle(page).click();
   await page.waitForTimeout(1500);await page.keyboard.press('Escape');await page.waitForTimeout(120);
   const a=(await logo(page).boundingBox())!,x=a.x+a.width/2,y=a.y+a.height/2;
-  await page.mouse.move(x,y);await page.mouse.down();await page.waitForTimeout(350);
+  await page.mouse.move(x,y);await page.mouse.down();const heldStart=(await logo(page).boundingBox())!;await page.waitForTimeout(350);
   const b=(await logo(page).boundingBox())!;await page.mouse.up();
-  await info.attach('held-logo-position',{body:JSON.stringify({before:a,held:b}),contentType:'application/json'});
-  expect(Math.abs(a.x-b.x)).toBeLessThanOrEqual(.75);expect(Math.abs(a.y-b.y)).toBeLessThanOrEqual(.75);
+  await info.attach('held-logo-position',{body:JSON.stringify({beforePointerDown:a,afterPointerDown:heldStart,held:b}),contentType:'application/json'});
+  expect(Math.abs(heldStart.x-b.x)).toBeLessThanOrEqual(.75);expect(Math.abs(heldStart.y-b.y)).toBeLessThanOrEqual(.75);
   await expect(page.locator('main')).toHaveAttribute('data-route','/');await idle(page);await composition(page);
 });
 
