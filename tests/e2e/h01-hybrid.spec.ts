@@ -47,7 +47,7 @@ test('H03 keyboard, shared menu locking, focus trap, Escape and route appearance
   await toggle.click(); await page.locator('[data-menu-panel] nav[aria-label="Explore"] a[href="/work"]').click(); await expect(page).toHaveURL(/\/work$/);
   await page.goBack(); await expect(hero(page)).toHaveAttribute('data-hero-entry', 'complete');
   await expect(page.locator('[data-hero-entry-layer]')).toHaveCount(0);
-  await toggle.click(); await page.locator('[data-menu-panel] nav[aria-label="Explore"] a[href="/contact"]').click(); await expect(page).toHaveURL(/\/contact$/);
+  await toggle.click(); await page.locator('[data-menu-panel] a[href="/contact"]:visible').click(); await expect(page).toHaveURL(/\/contact$/);
 });
 test('H03 reduced motion is final immediately and has no running Hero animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' }); await ready(page);

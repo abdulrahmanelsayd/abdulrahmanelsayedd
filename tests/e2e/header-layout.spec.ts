@@ -1,5 +1,6 @@
 import {expect, test, type Page} from "@playwright/test";
 import {identity} from "../../src/content/identity";
+import {menuRouteIds, getRoute} from "../../src/content/routes";
 
 const header=(page:Page)=>page.locator('[data-site-header]');
 const toggle=(page:Page)=>page.locator('[data-menu-toggle]');
@@ -36,7 +37,7 @@ for(const route of ['/','/work','/services','/contact','/about','/header-layout-
     await toggle(page).focus(); await page.keyboard.press('Enter');
     await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toBeVisible();
     await expect(page.locator('[data-page-content]')).toHaveAttribute('inert','');
-    await expect(page.locator('[data-menu-panel] nav[aria-label="Explore"] a')).toHaveCount(5);
+    expect(await page.locator('[data-menu-panel] nav[aria-label="Explore"] > ul a').evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(menuRouteIds.map(id=>getRoute(id).href));
     const motion=await page.locator('[data-menu-panel]').evaluate(element=>({duration:getComputedStyle(element).transitionDuration,delay:getComputedStyle(element).transitionDelay}));
     expect(motion.duration.split(',')[0].trim()).toBe('0.9s');expect(motion.delay.split(',')[0].trim()).toBe('0.3s');
     await page.keyboard.press('Escape');
@@ -60,7 +61,7 @@ test('the logo navigates Home through the existing curtain and reduced motion ke
   await expect(page.locator('main')).toHaveAttribute('data-route','/');await idle(page);await composition(page);
   await page.emulateMedia({reducedMotion:'reduce'});await toggle(page).click();
   await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toBeVisible();
-  await page.locator('[data-menu-panel] nav[aria-label="Explore"]').getByRole('link',{name:'Contact',exact:true}).click();
+  await page.locator('[data-menu-panel] a[href="/contact"]:visible').click();
   await expect(page.locator('main')).toHaveAttribute('data-route','/contact');await idle(page);await composition(page);
   await expect(page.locator('[data-page-content]')).not.toHaveAttribute('inert');
 });
