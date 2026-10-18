@@ -1,0 +1,57 @@
+name: Browser compatibility
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: compatibility-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    env:
+      SITE_URL: https://abdulrahmanelsayed.xyz
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run check:install
+      - run: npm run build
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Check production compatibility
+        shell: bash
+        run: |
+          npm start -- --hostname 127.0.0.1 --port 3000 > "$RUNNER_TEMP/compatibility-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..60}; do
+            if curl --fail --silent --output /dev/null http://127.0.0.1:3000/; then break; fi
+            if ! kill -0 "$server_pid" 2>/dev/null; then cat "$RUNNER_TEMP/compatibility-server.log"; exit 1; fi
+            sleep 1
+          done
+          npx playwright test --config playwright.compatibility.config.ts --project=${{ matrix.browser }}-desktop --project=${{ matrix.browser }}-mobile-viewport
+      - name: Preserve compatibility evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: compatibility-${{ matrix.browser }}-${{ github.run_attempt }}
+          path: test-results/release/
+          retention-days: 3
+          if-no-files-found: ignore
