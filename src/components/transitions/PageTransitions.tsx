@@ -138,6 +138,9 @@ export function PageTransitions({ children }: { children: ReactNode }) {
       if (owner.current) return true;
       setFailure(null);
       const job = acquire(false, false, destination, options?.scroll !== false);
+      // Fetch only after an actual navigation intent, while the curtain covers.
+      // Visible/hovered links must not preload another page's images or styles.
+      router.prefetch(destination.pathname + destination.search);
       void run(job, options);
       return true;
     };

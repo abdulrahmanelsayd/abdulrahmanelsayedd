@@ -9,7 +9,7 @@ type Props = ComponentProps<typeof Link> & { onCovered?: () => void };
 /** Keep Next's native link semantics, including modifiers, downloads and new tabs. */
 export function TransitionLink({ onCovered, ...props }: Props) {
   const navigate = usePageTransition();
-  return <Link {...props} onNavigate={event => {
+  return <Link {...props} prefetch={props.prefetch ?? false} onNavigate={event => {
     let prevented = false;
     props.onNavigate?.({ preventDefault: () => { prevented = true; event.preventDefault(); } });
     if (prevented) return;
