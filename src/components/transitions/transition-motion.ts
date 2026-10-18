@@ -105,12 +105,16 @@ export function createCurtainMotion(elements: CurtainElements, signal: AbortSign
       ? ["[data-hero-photo-layer]", "[data-hero-location]", "[data-hero-description]", "#home-hero-heading"].map(selector => hero.querySelector<HTMLElement>(selector)).filter((element): element is HTMLElement => !!element)
       : [...content?.querySelectorAll<HTMLElement>("main > :not(style):not(script):not(noscript)") ?? []].slice(0, 3);
     const distance = innerWidth > 540 ? "50vh" : initial ? "10vh" : "20vh";
-    const delay = initial ? 200 : 150, duration = initial && home ? 1500 : 1000;
+    // Home must reach its final composition before the curtain leaves it exposed.
+    // Child name/globe loops remain independent of this finite entrance.
+    const delay = home ? 0 : initial ? 200 : 150;
+    const duration = home ? transitionTiming.reveal : 1000;
+    const stagger = home ? 0 : 50;
     const jobs = [
       play(elements.screen, [{ transform: "translateY(0)" }, { transform: "translateY(-100%)" }], 800, initial ? motionEase.initialReveal : motionEase.routeReveal),
       play(elements.bottom, [{ transform: "scaleY(1)" }, { transform: "scaleY(0)" }], initial ? 1000 : 850, initial ? motionEase.initialReveal : motionEase.routeReveal, initial ? 0 : 200),
       play(elements.words, [{ opacity: 1 }, { opacity: 0 }], initial ? 300 : 600, "linear", initial ? 200 : 0),
-      ...targets.map((element, index) => play(element, [{ transform: `translate3d(0,${distance},0)` }, { transform: "translate3d(0,0,0)" }], duration, motionEase.content, delay + index * (initial && home ? 70 : 50))),
+      ...targets.map((element, index) => play(element, [{ transform: `translate3d(0,${distance},0)` }, { transform: "translate3d(0,0,0)" }], duration, motionEase.content, delay + index * stagger)),
     ];
     await Promise.all(jobs);
   };
