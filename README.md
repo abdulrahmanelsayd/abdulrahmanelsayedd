@@ -67,3 +67,12 @@ which has no patched release. Its lint dependency chain uses repository-owned
 patterns and is absent from the reviewed production traces. The production
 audit is a blocking CI check. Keep the full audit enabled and revisit this
 exception when the dependency chain, pattern inputs or upstream advisory changes.
+`npm run audit:dependencies` runs the full audit and accepts only this exact
+development chain and advisory. CI rejects new findings, production nodes,
+changed versions or a different available fix. The exception stays visible.
+
+`npx playwright install firefox webkit` installs the optional compatibility
+engines. With the production server running, use
+`npx playwright test --config playwright.compatibility.config.ts` for desktop
+and mobile viewport journeys. Firefox mobile viewport tests are not Firefox
+Android; WebKit on Linux is not a real Safari or iPhone device test.

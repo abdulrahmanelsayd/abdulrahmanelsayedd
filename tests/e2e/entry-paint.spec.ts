@@ -68,7 +68,7 @@ test.beforeEach(async ({ page }) => {
 });
 test.afterEach(async ({ page }) => { expect(pageErrors.get(page)).toEqual([]); });
 
-for (const visit of ["first open", "reload"] as const) test(`streamed ${visit} cannot paint the Hero before the intro`, async ({ page, baseURL }, info) => {
+for (const visit of ["first open", "reload"] as const) test(`streamed ${visit} cannot paint the Hero before the intro`, async ({ page, baseURL, browserName }, info) => {
   const fixture = await streamHome(baseURL!, visit === "first open");
   let releaseBundles = () => {};
   try {
@@ -81,9 +81,12 @@ for (const visit of ["first open", "reload"] as const) test(`streamed ${visit} c
     for (const delay of [100, 1000]) {
       await page.waitForTimeout(delay);
       const frame = await coverSnapshot(page); frames.push(frame);
-      await info.attach(`partial-document-${delay}ms`, { body:await page.screenshot(), contentType:"image/png" });
       expect(frame.entry).toBe("pending"); expect(frame.greetingStarts).toBe(1); expect(frame.reactStarts).toBe(0);
       expect(frame.covered).toEqual([true,true,true,true]);
+      // Firefox/WebKit screenshot capture waits for the deliberately unfinished
+      // document. Keep all coverage/hit-test assertions on every engine; only
+      // Chromium can attach a bitmap while this navigation is paused.
+      if (browserName==="chromium") await info.attach(`partial-document-${delay}ms`, { body:await page.screenshot(), contentType:"image/png" });
     }
     console.log(JSON.stringify({ event:"entry-paint", visit, project:info.project.name, frames }));
     await info.attach("partial-document-observations", { body:JSON.stringify(frames), contentType:"application/json" });

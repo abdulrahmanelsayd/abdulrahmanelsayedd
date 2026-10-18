@@ -20,6 +20,7 @@
     "test:release": "node tools/release-check.mjs",
     "test:regression": "playwright test --config playwright.regression.config.ts",
     "check:install": "node tools/check-install.mjs",
+    "audit:dependencies": "node tools/audit-dependencies.mjs",
     "test:gallery": "node tools/gallery-smoke.mjs"
   },
   "dependencies": {

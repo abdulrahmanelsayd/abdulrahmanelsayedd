@@ -27,7 +27,10 @@ test("five routes, direct reload, readable content, images and 404",async({page}
     const status=route.includes("missing")?404:200;
     expect((await page.goto(route))?.status()).toBe(status);await idle(page);
     await expect(page.locator("main h1")).toHaveCount(1);await expect(page.locator("main h1")).toBeVisible();await overflow(page);
-    expect((await page.reload())?.status()).toBe(status);await idle(page);
+    // Firefox exposes the HTTP revalidation response, while Chromium/WebKit
+    // expose the cached 200. A fresh navigation above must still return 200.
+    const reloadStatus=(await page.reload())?.status();
+    expect(status===200?[200,304]:[404]).toContain(reloadStatus);await idle(page);
     await expect(page.locator("main h1")).toBeVisible();await overflow(page);
   }
 });
@@ -99,7 +102,13 @@ test("About and Services controls respond to live motion preference changes",asy
 
 test("Escape, reduced motion and fragment links do not leave an intro lock",async({page})=>{
   await page.goto("/",{waitUntil:"commit"});await page.waitForFunction(()=>window.__homeEntry?.active);await page.keyboard.press("Escape");await idle(page);
-  await page.goto("/#main-content");await idle(page);expect(await page.evaluate(()=>performance.getEntriesByName("tr03:greetings-start").length)).toBe(0);
+  const starts=await page.evaluate(()=>performance.getEntriesByName("tr03:greetings-start").length);
+  await page.goto("/#main-content");await idle(page);
+  // Same-document hash navigation retains existing marks; it must not restart.
+  expect(await page.evaluate(()=>performance.getEntriesByName("tr03:greetings-start").length)).toBe(starts);
+  await page.goto("/work");await idle(page);
+  await page.goto("/#main-content");await idle(page);
+  expect(await page.evaluate(()=>performance.getEntriesByName("tr03:greetings-start").length)).toBe(0);
   await page.emulateMedia({reducedMotion:"reduce"});
   for(const route of ["/","/work","/about","/services","/contact"]){await page.goto(route);await idle(page);await expect(page.locator("main h1")).toBeVisible();await overflow(page);}
 });
