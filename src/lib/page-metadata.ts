@@ -6,7 +6,7 @@ import { getSiteUrl } from "./site-url";
 
 export const sharedOpenGraph = {
   type: "website", siteName: identity.name, locale: "en_US",
-  images: [{ url: socialPreview.src, alt: socialPreview.alt }],
+  images: [{ url: socialPreview.src, alt: socialPreview.alt, width: socialPreview.width, height: socialPreview.height, type: "image/jpeg" }],
 } satisfies NonNullable<Metadata["openGraph"]>;
 
 export function getPageMetadata(id: RouteId): Pick<Metadata, "alternates" | "openGraph"> {

@@ -22,7 +22,8 @@ export const siteIcons = {
   apple: "/apple-icon.png",
 } as const;
 export const socialPreview = {
-  src: "/images/social-preview.jpg",
-  alt: "Abdulrahman Elsayed — Web Designer & Developer based in Egypt, with the AE monogram.",
+  src: "/images/social-preview-36ad02869f27.jpg",
+  width: 1200, height: 630,
+  alt: "Abdulrahman Elsayed — web designer and developer, with his portrait and signature.",
 } as const;
 

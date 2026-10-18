@@ -280,6 +280,14 @@
       "format": "webp",
       "width": 1191,
       "height": 1321
+    },
+    {
+      "file": "public/images/social-preview-36ad02869f27.jpg",
+      "bytes": 82707,
+      "sha256": "36ad02869f279ac452647cccbb0c589252f3d7799cd6dd94590489d6238ccc32",
+      "width": 1200,
+      "height": 630,
+      "format": "jpeg"
     }
   ]
 }
