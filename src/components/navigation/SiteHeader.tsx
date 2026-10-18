@@ -5,10 +5,9 @@ import { usePathname } from "next/navigation";
 import { identity } from "../../content/identity";
 import { routes, getRoute } from "../../content/routes";
 import type { useNavigationMenu } from "./use-navigation-menu";
-import { HeaderAction } from "./HeaderAction";
 import { MenuLink } from "./MenuLink";
 import { BrandLogo } from "../brand/BrandLogo";
-import { useHeroHeader } from "./use-hero-header";
+import { holdHeaderPress } from "./header-press";
 import styles from "./Navigation.module.css";
 
 export function SiteHeader({ navigation, children }: { navigation: Omit<ReturnType<typeof useNavigationMenu>, "application">; children: ReactNode }) {
@@ -16,9 +15,9 @@ export function SiteHeader({ navigation, children }: { navigation: Omit<ReturnTy
   const viewport = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const open = phase === "open", active = phase !== "closed";
-  const root = useHeroHeader(pathname, phase);
+  const root = useRef<HTMLElement>(null);
+  useLayoutEffect(() => holdHeaderPress(root.current!), []);
   useLayoutEffect(() => {
-    if (pathname === "/") return;
     let frame = 0;
     const read = () => { frame = 0; if (root.current) root.current.dataset.scrolled = String(window.scrollY > 50); };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(read); };
@@ -27,8 +26,7 @@ export function SiteHeader({ navigation, children }: { navigation: Omit<ReturnTy
     return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", schedule); };
   }, [pathname, root]);
   useLayoutEffect(() => { if (open) viewport.current?.scrollTo({ top: 0 }); }, [open]);
-  return <header ref={root} className={styles.header} data-site-header data-home={pathname === "/"} data-home-layout={pathname === "/" ? "closed" : undefined} data-open={open} data-closing={phase === "closing"}>
-    <div className={styles.heroCorners} data-header-corners aria-hidden="true" />
+  return <header ref={root} className={styles.header} data-site-header data-open={open} data-closing={phase === "closing"}>
     <div ref={scope} role={active ? "dialog" : undefined} aria-modal={active ? true : undefined} aria-label={active ? "Navigation" : undefined} data-navigation-scope>
       <div className={styles.backdrop} onClick={() => close()} aria-hidden="true" />
       <div className={styles.widthWrap} data-header-width><div className={styles.bar} data-header-bar>
@@ -41,7 +39,6 @@ export function SiteHeader({ navigation, children }: { navigation: Omit<ReturnTy
           <MenuLink href={getRoute("home").href} className={styles.brand} aria-label={`${identity.name} — Home`} data-brand-interactive>
             <span className={styles.wordmark} data-header-wordmark><BrandLogo /></span><span className={styles.monogram} data-header-monogram><BrandLogo /></span>
           </MenuLink>
-          <div className={styles.actions} data-header-actions><HeaderAction route="work" /><HeaderAction route="contact" /></div>
           <div className={styles.line} />
         </div>
         <div id="navigation-overlay" className={styles.bottom} inert={!open} aria-hidden={!open} data-menu-panel>

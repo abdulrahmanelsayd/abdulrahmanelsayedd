@@ -15,7 +15,7 @@ export function IntroductionMotion({ children, className }: { children: ReactNod
     const header = document.querySelector<HTMLElement>("[data-site-header]")!;
     // Reserve the entire closed bar independently of button travel and menu
     // expansion, so gathering never reflows the reading stage.
-    const headerTop = header.querySelector<HTMLElement>("[data-header-corners]")!;
+    const headerTop = header.querySelector<HTMLElement>("[data-header-top]")!;
     const application = element.closest<HTMLElement>("[data-page-content]");
     const preference = matchMedia("(prefers-reduced-motion: reduce)");
     const storageKey = "s01-reading-position";
