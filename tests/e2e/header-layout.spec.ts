@@ -64,3 +64,20 @@ test('the logo navigates Home through the existing curtain and reduced motion ke
   await expect(page.locator('main')).toHaveAttribute('data-route','/contact');await idle(page);await composition(page);
   await expect(page.locator('[data-page-content]')).not.toHaveAttribute('inert');
 });
+
+test('native held logo activation survives the closing width transition',async({page},info)=>{
+  await page.goto('/work');await idle(page);await toggle(page).click();
+  await page.waitForTimeout(1500);await page.keyboard.press('Escape');await page.waitForTimeout(120);
+  const a=(await logo(page).boundingBox())!,x=a.x+a.width/2,y=a.y+a.height/2;
+  await page.mouse.move(x,y);await page.mouse.down();await page.waitForTimeout(350);
+  const b=(await logo(page).boundingBox())!;await page.mouse.up();
+  await info.attach('held-logo-position',{body:JSON.stringify({before:a,held:b}),contentType:'application/json'});
+  expect(Math.abs(a.x-b.x)).toBeLessThanOrEqual(.75);expect(Math.abs(a.y-b.y)).toBeLessThanOrEqual(.75);
+  await expect(page.locator('main')).toHaveAttribute('data-route','/');await idle(page);await composition(page);
+});
+
+test('tablet retains the existing inside Contact action when the portrait card is hidden',async({page})=>{
+  await page.setViewportSize({width:768,height:1024});await page.goto('/work');await idle(page);await toggle(page).click();
+  await page.locator('[data-menu-panel] a[href="/contact"]:visible').click();
+  await expect(page.locator('main')).toHaveAttribute('data-route','/contact');await idle(page);
+});

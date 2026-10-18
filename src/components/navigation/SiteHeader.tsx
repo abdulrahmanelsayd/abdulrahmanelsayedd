@@ -7,6 +7,7 @@ import { routes, getRoute } from "../../content/routes";
 import type { useNavigationMenu } from "./use-navigation-menu";
 import { MenuLink } from "./MenuLink";
 import { BrandLogo } from "../brand/BrandLogo";
+import { holdHeaderPress } from "./header-press";
 import styles from "./Navigation.module.css";
 
 export function SiteHeader({ navigation, children }: { navigation: Omit<ReturnType<typeof useNavigationMenu>, "application">; children: ReactNode }) {
@@ -15,6 +16,7 @@ export function SiteHeader({ navigation, children }: { navigation: Omit<ReturnTy
   const pathname = usePathname();
   const open = phase === "open", active = phase !== "closed";
   const root = useRef<HTMLElement>(null);
+  useLayoutEffect(() => holdHeaderPress(root.current!), []);
   useLayoutEffect(() => {
     let frame = 0;
     const read = () => { frame = 0; if (root.current) root.current.dataset.scrolled = String(window.scrollY > 50); };

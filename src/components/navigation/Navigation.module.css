@@ -508,6 +508,11 @@ a:focus-visible .underlined::before {
   .smallLinks {
     padding-top: var(--nav-unit);
   }
+  /* Contact moved inside: tablet needs the existing CTA when the portrait card is hidden. */
+  .mobileActions { display: flex; grid-column: 1 / -1; transform: translateY(16px); transition: transform var(--default); }
+  .header[data-open=true] .mobileActions { transform: translateY(0); transition: transform var(--long) .45s; }
+  .mobileActions>.action { width: 100%; }
+  .mobileActions .surface { width: 100%; height: 48px; border-radius: 4px; }
 }
 @media(max-width:767px) {
   .header {
