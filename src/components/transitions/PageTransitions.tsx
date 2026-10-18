@@ -187,8 +187,7 @@ export function PageTransitions({ children }: { children: ReactNode }) {
     if (job?.destination?.pathname === pathname) job.ready();
   }, [pathname]);
   return <Context value={navigate}>
-    <div ref={shell} data-transition-shell suppressHydrationWarning>{children}</div>
-    <div ref={announcement} className="sr-only" role="status" aria-live="polite" aria-atomic="true" />
+    {/* The parser must receive the cover before any page content can paint. */}
     <div ref={viewport} className={styles.viewport} data-page-curtain data-phase="idle" aria-hidden="true" suppressHydrationWarning>
       <div ref={screen} className={styles.screen} data-curtain-screen>
         <div ref={top} className={`${styles.edge} ${styles.top}`} data-curtain-top><div className={styles.ellipse} /></div>
@@ -196,6 +195,8 @@ export function PageTransitions({ children }: { children: ReactNode }) {
         <div ref={bottom} className={`${styles.edge} ${styles.bottom}`} data-curtain-bottom><div className={styles.ellipse} /></div>
       </div>
     </div>
+    <div ref={shell} data-transition-shell suppressHydrationWarning>{children}</div>
+    <div ref={announcement} className="sr-only" role="status" aria-live="polite" aria-atomic="true" />
     {failure && <div className={styles.status} role="status">That page didn’t open. <a href={failure}>Try again</a></div>}
   </Context>;
 }

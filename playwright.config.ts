@@ -15,8 +15,8 @@ export default defineConfig({
     launchOptions:process.env.PLAYWRIGHT_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH}:{},
   },
   projects:[
-    {name:"desktop",testMatch:"release.spec.ts"},
-    {name:"mobile",testMatch:"release.spec.ts",use:{viewport:{width:390,height:844},isMobile:true,hasTouch:true}},
+    {name:"desktop",testMatch:["release.spec.ts","entry-paint.spec.ts"]},
+    {name:"mobile",testMatch:["release.spec.ts","entry-paint.spec.ts"],use:{viewport:{width:390,height:844},isMobile:true,hasTouch:true}},
     {name:"regression",testMatch:regression.map(name=>name+".spec.ts")},
   ],
 });
