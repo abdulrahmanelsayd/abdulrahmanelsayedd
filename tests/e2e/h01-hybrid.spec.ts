@@ -44,10 +44,10 @@ test('H03 keyboard, shared menu locking, focus trap, Escape and route appearance
   await page.locator('[data-menu-panel] a:visible').last().focus(); await page.keyboard.press('Tab'); await expect(toggle).toBeFocused();
   await page.keyboard.press('Escape'); await expect(page.getByRole('dialog', { name: 'Navigation' })).toHaveCount(0); await expect(toggle).toBeFocused();
   await expect(page.locator('[data-page-content]')).not.toHaveAttribute('inert');
-  await page.locator('[data-header-actions] a[href="/work"]').click(); await expect(page).toHaveURL(/\/work$/);
+  await toggle.click(); await page.locator('[data-menu-panel] nav[aria-label="Explore"] a[href="/work"]').click(); await expect(page).toHaveURL(/\/work$/);
   await page.goBack(); await expect(hero(page)).toHaveAttribute('data-hero-entry', 'complete');
   await expect(page.locator('[data-hero-entry-layer]')).toHaveCount(0);
-  await page.locator('[data-header-actions] a[href="/contact"]').click(); await expect(page).toHaveURL(/\/contact$/);
+  await toggle.click(); await page.locator('[data-menu-panel] nav[aria-label="Explore"] a[href="/contact"]').click(); await expect(page).toHaveURL(/\/contact$/);
 });
 test('H03 reduced motion is final immediately and has no running Hero animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' }); await ready(page);
