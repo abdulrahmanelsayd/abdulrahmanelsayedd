@@ -30,8 +30,8 @@ async function idle(page:Page) {
   expect(await page.locator("html").getAttribute("data-transition-outcome")||"").not.toMatch(/deadline|error/);
 }
 async function overflow(page:Page) {
-  expect(await page.evaluate(()=>({document:document.documentElement.scrollWidth,viewport:innerWidth})))
-    .toEqual(await page.evaluate(()=>({document:innerWidth,viewport:innerWidth})));
+  const width = await page.evaluate(()=>({document:document.documentElement.scrollWidth,available:document.documentElement.clientWidth}));
+  expect(width.document, "content exceeds the viewport excluding its reserved scrollbar").toBeLessThanOrEqual(width.available);
 }
 async function scan(page:Page) {
   await page.evaluate(()=>document.fonts.ready);
