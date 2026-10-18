@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { afterHomeEntry } from "../transitions/entry-layout";
 import { footerProgress, footerLetterOffset } from "./footer-geometry";
 
 /** Shared black-section-to-contact reveal; gesture guards also apply to About. */
 export function FooterMotion({ children, className, from = "projects" }: { children: ReactNode; className: string; from?: "projects" | "about" }) {
   const root = useRef<HTMLElement>(null);
-  useEffect(() => {
+  useEffect(() => afterHomeEntry(root.current, () => {
     const enhance = (activation?: FocusEvent | PointerEvent) => {
     const element = root.current!, panel = element.querySelector<HTMLElement>("[data-footer-panel]")!, curve = element.querySelector<HTMLElement>("[data-footer-curve]")!;
     const travel = element.querySelector<HTMLElement>("[data-footer-travel]")!, arrow = element.querySelector<HTMLElement>("[data-footer-arrow]")!;
@@ -183,6 +184,6 @@ export function FooterMotion({ children, className, from = "projects" }: { child
     gate.observe(element);
     element.addEventListener("focusin", start, true); element.addEventListener("pointerdown", start, true);
     return () => { gate.disconnect(); element.removeEventListener("focusin", start, true); element.removeEventListener("pointerdown", start, true); dispose?.(); };
-  },[from]);
-  return <footer ref={root} className={className} data-section="footer" data-footer-from={from}>{children}</footer>;
+  }), [from]);
+  return <footer ref={root} className={className} data-section="footer" data-home-deferred data-footer-from={from}>{children}</footer>;
 }

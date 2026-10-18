@@ -19,7 +19,7 @@ function ProjectLink({ project, className }: { project: Project; className: stri
 
 /** All four real projects and their destinations are rendered on the server. */
 export function HomeProjects() {
-  return <section className={styles.section} data-section="selected-projects" aria-labelledby="selected-work-title">
+  return <section className={styles.section} data-section="selected-projects" data-home-deferred aria-labelledby="selected-work-title">
     <h2 id="selected-work-title" className="sr-only">Selected projects</h2>
     <ProjectStatement />
     <div className={styles.container}><ProjectGalleryMotion className={styles.group} count={homeProjects.length}>

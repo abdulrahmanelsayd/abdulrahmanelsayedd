@@ -15,8 +15,8 @@ export default defineConfig({
     launchOptions:process.env.PLAYWRIGHT_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH}:{},
   },
   projects:[
-    {name:"desktop",testMatch:["release.spec.ts","entry-paint.spec.ts","hero-arrival.spec.ts","resource-policy.spec.ts"]},
-    {name:"mobile",testMatch:["release.spec.ts","entry-paint.spec.ts","hero-arrival.spec.ts","resource-policy.spec.ts"],use:{viewport:{width:390,height:844},isMobile:true,hasTouch:true}},
+    {name:"desktop",testMatch:["release.spec.ts","entry-paint.spec.ts","hero-arrival.spec.ts","resource-policy.spec.ts","entry-layout.spec.ts"]},
+    {name:"mobile",testMatch:["release.spec.ts","entry-paint.spec.ts","hero-arrival.spec.ts","resource-policy.spec.ts","entry-layout.spec.ts"],use:{viewport:{width:390,height:844},isMobile:true,hasTouch:true}},
     {name:"classic-scrollbar",testMatch:["entry-paint.spec.ts","hero-arrival.spec.ts"],use:{launchOptions:{ignoreDefaultArgs:["--hide-scrollbars"],...(process.env.PLAYWRIGHT_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH}:{})}}},
     {name:"regression",testMatch:regression.map(name=>name+".spec.ts")},
   ],

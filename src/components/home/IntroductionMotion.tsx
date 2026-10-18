@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { afterHomeEntry } from "../transitions/entry-layout";
 import { clamp, characterOpacity, readingGeometry } from "./introduction-geometry";
 
 /** One event-driven controller; all letter poses use the same cached scroll range. */
-export function IntroductionMotion({ children, className }: { children: ReactNode; className: string }) {
+export function IntroductionMotion({ children, className, entryFonts }: { children: ReactNode; className: string; entryFonts: string[] }) {
   const root = useRef<HTMLElement>(null);
-  useEffect(() => {
+  useEffect(() => afterHomeEntry(root.current, () => {
     const element = root.current!;
     const stage = element.querySelector<HTMLElement>("[data-intro-stage]")!;
     const content = element.querySelector<HTMLElement>("[data-intro-content]")!;
@@ -141,6 +142,6 @@ export function IntroductionMotion({ children, className }: { children: ReactNod
       document.removeEventListener("visibilitychange", visibility); preference.removeEventListener("change", scheduleMeasure);
       document.fonts.removeEventListener("loadingdone", onFonts); reset();
     };
-  }, []);
-  return <section ref={root} id="home-introduction" className={className} data-section="introduction-reading" aria-labelledby="home-introduction-heading">{children}</section>;
+  }), []);
+  return <section ref={root} id="home-introduction" className={className} data-section="introduction-reading" data-home-deferred data-entry-fonts={JSON.stringify(entryFonts)} aria-labelledby="home-introduction-heading">{children}</section>;
 }

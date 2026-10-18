@@ -9,6 +9,7 @@ import { pageLabel, transitionDestination, transitionTiming } from "./transition
 import styles from "./PageTransitions.module.css";
 import { createTransitionClock } from "./transition-clock";
 import type { HomeEntry } from "./home-entry";
+import { prepareHomeLayout } from "./entry-layout";
 
 type Options = { replace?: boolean; scroll?: boolean; onCovered?: () => void };
 type Navigate = (href: string, options?: Options) => boolean;
@@ -116,6 +117,8 @@ export function PageTransitions({ children }: { children: ReactNode }) {
           positionDestination(job);
           await waitForHeroImage(signal);
         }
+        if (signal.aborted) return;
+        if (job.entry) await prepareHomeLayout(signal);
         if (signal.aborted) return;
         // A deliberate Home intro reveals the Hero, while history and fragment links keep their native position.
         if (job.initial && location.pathname === "/" && !location.hash) {

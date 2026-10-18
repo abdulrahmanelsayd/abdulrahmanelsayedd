@@ -70,7 +70,8 @@ export function startHomeEntry(settings: Settings, makeClock: typeof createTrans
     document.removeEventListener("keydown", key, true); reduced.removeEventListener("change", preference);
     window.removeEventListener("pagehide", leave); window.removeEventListener("popstate", leave);
     owned.forEach((inert, element) => { element.inert = inert; }); owned.clear();
-    delete root.dataset.pageEntry; delete root.dataset.pageTransition;
+    delete root.dataset.pageEntry; delete root.dataset.pageTransition; delete root.dataset.homeEntry;
+    root.dispatchEvent(new Event("home-entry-layout"));
     const viewport = document.querySelector<HTMLElement>("[data-page-curtain]");
     if (viewport) { delete viewport.dataset.active; viewport.dataset.phase = "idle"; }
     root.dataset.transitionOutcome = outcome;
@@ -98,7 +99,7 @@ export function startHomeEntry(settings: Settings, makeClock: typeof createTrans
   const entry: HomeEntry = { abort, clock, greetings, active: true, finish,
     adopt: callback => { if (!entry.active || claimed) return false; claimed = true; cancelOwner = callback; return true; },
   };
-  window.__homeEntry = entry; root.dataset.pageEntry = "pending";
+  window.__homeEntry = entry; root.dataset.pageEntry = "pending"; root.dataset.homeEntry = "pending";
   document.addEventListener("keydown", key, true); reduced.addEventListener("change", preference);
   window.addEventListener("pagehide", leave); window.addEventListener("popstate", leave);
   observer.observe(document, { childList: true, subtree: true });

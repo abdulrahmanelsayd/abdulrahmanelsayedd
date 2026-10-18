@@ -15,6 +15,6 @@ export default function Home() {
       <CapabilityMarquee />
       <HomeIntroduction />
       <HomeProjects />
-    </main><SiteFooter from="projects" /></>
+    </main><SiteFooter from="projects" /><span hidden data-home-content-ready /></>
   );
 }

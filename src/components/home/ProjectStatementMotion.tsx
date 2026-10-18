@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { afterHomeEntry } from "../transitions/entry-layout";
 
 export function ProjectStatementMotion({ children, className }: { children: ReactNode; className: string }) {
   const root = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useEffect(() => afterHomeEntry(root.current, () => {
     const preference = matchMedia("(prefers-reduced-motion: reduce)");
     const paths = [...root.current!.querySelectorAll<SVGPathElement>("[data-statement-draw] path")];
     const animations = new Map<SVGPathElement, Animation>();
@@ -24,6 +25,6 @@ export function ProjectStatementMotion({ children, className }: { children: Reac
     });
     paths.forEach(path => observer.observe(path)); preference.addEventListener("change", reset);
     return () => { observer.disconnect(); preference.removeEventListener("change", reset); reset(); };
-  }, []);
+  }), []);
   return <div ref={root} className={className} data-project-statement>{children}</div>;
 }

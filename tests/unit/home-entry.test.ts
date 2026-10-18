@@ -4,7 +4,7 @@ import { homeGreetings, startHomeEntry } from "../../src/components/transitions/
 import { greetings, greetingTimes, transitionTiming, motionEase } from "../../src/components/transitions/transition-settings.ts";
 
 test("parser lease adopts once, retains its watchdog, and restores only its inert snapshot", async () => {
-  const doc = new EventTarget(), root = { dataset: {} as Record<string, string> }, shell = { inert: false };
+  const doc = new EventTarget(), root = Object.assign(new EventTarget(), { dataset: {} as Record<string, string> }), shell = { inert: false };
   const viewport = { dataset: {} }, words = { querySelector: () => ({}) };
   Object.assign(viewport, { querySelector: () => words });
   Object.assign(doc, { documentElement: root, querySelectorAll: () => [shell], querySelector: () => viewport });
@@ -19,6 +19,8 @@ test("parser lease adopts once, retains its watchdog, and restores only its iner
     const settings = { greetings, times: greetingTimes, hold: transitionTiming.homeHold, deadline: transitionTiming.deadline, easing: motionEase.words };
     startHomeEntry(settings, makeClock, async () => {});
     const entry = win.__homeEntry!;
+    assert.equal(root.dataset.homeEntry, "pending");
+    let layoutReleases = 0; root.addEventListener("home-entry-layout", () => { layoutReleases++; });
     assert.equal(shell.inert, true); assert.equal(observers, 0); assert.equal(duration, 9000);
     let cancellations = 0;
     assert.equal(entry.adopt(outcome => { cancellations++; entry.finish(outcome); }), true);
@@ -27,6 +29,7 @@ test("parser lease adopts once, retains its watchdog, and restores only its iner
     expire(); await Promise.resolve();
     assert.equal(cancellations, 1); assert.equal(aborts, 1); assert.equal(shell.inert, false);
     entry.finish(); assert.equal(aborts, 1); assert.equal(root.dataset.pageEntry, undefined);
+    assert.equal(root.dataset.homeEntry, undefined); assert.equal(layoutReleases, 1);
   } finally { for (const key of Object.keys(globals)) Reflect.deleteProperty(globalThis, key); }
 });
 

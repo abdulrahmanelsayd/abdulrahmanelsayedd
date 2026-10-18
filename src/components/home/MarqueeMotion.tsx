@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { afterHomeEntry } from "../transitions/entry-layout";
 import { marqueeSpeed, marqueeTiming } from "./introduction-geometry";
 
 export function MarqueeMotion({ children, className }: { children: ReactNode; className: string }) {
   const root = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useEffect(() => afterHomeEntry(root.current, () => {
     const element = root.current!;
     const viewport = element.querySelector<HTMLElement>("[data-marquee-viewport]")!;
     const track = element.querySelector<HTMLElement>("[data-marquee-track]")!;
@@ -89,6 +90,6 @@ export function MarqueeMotion({ children, className }: { children: ReactNode; cl
       control.hidden = true; viewport.tabIndex = 0;
       viewport.setAttribute("data-scroll-native", "");
     };
-  }, []);
-  return <div ref={root} className={className} data-capability-marquee>{children}</div>;
+  }), []);
+  return <div ref={root} className={className} data-capability-marquee data-home-deferred>{children}</div>;
 }

@@ -19,3 +19,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .skip-link { position: fixed; top: 8px; left: 8px; z-index: 100; transform: translateY(-160%); padding: 12px; background: #fff; color: #201d1d; }
 .skip-link:focus { transform: none; }
+
+/* Prepare offscreen Home geometry behind its initial curtain, before scroll unlock. */
+html[data-home-entry="pending"] [data-home-deferred] { content-visibility: hidden; }
+html[data-home-entry="pending"] [data-capability-marquee] { contain-intrinsic-block-size: 80px; }
+@media (max-width: 767px) {
+  html[data-home-entry="pending"] [data-capability-marquee] { contain-intrinsic-block-size: 64px; }
+}

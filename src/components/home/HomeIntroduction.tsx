@@ -15,7 +15,7 @@ export function HomeIntroduction() {
       {Array.from(word).map((letter, letterIndex) => <span key={letterIndex} className={styles.letter} data-intro-letter data-intro-lead={lead ? "" : undefined}>{letter}</span>)}
     </span>;
   });
-  return <IntroductionMotion className={`${styles.section} ${epilogue.variable} ${instrumentSerif.variable}`}>
+  return <IntroductionMotion className={`${styles.section} ${epilogue.variable} ${instrumentSerif.variable}`} entryFonts={[`900 16px ${epilogue.style.fontFamily}`, `italic 400 16px ${instrumentSerif.style.fontFamily}`]}>
     <div className={styles.stage} data-intro-stage>
       <div className={styles.content} data-intro-content>
         <h2 id="home-introduction-heading" className={styles.heading} aria-label={introduction}>

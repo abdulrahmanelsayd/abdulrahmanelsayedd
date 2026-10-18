@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { afterHomeEntry } from "../transitions/entry-layout";
 import { modulo, nearestProjectPhase, power3Out, projectCardPose, settleDuration } from "../../lib/project-card-state";
 import { projectCursor } from "./project-cursor";
 
@@ -9,7 +10,7 @@ type Transition = { from: number; to: number; start: number; duration: number };
 
 export function ProjectGalleryMotion({ children, className, count }: { children: ReactNode; className: string; count: number }) {
   const root = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useEffect(() => afterHomeEntry(root.current, () => {
     const element = root.current!, stage = element.querySelector<HTMLElement>("[data-project-stage]")!;
     const collection = element.querySelector<HTMLElement>("[data-project-cards]")!;
     const originals = [...collection.querySelectorAll<HTMLElement>("[data-project-card]")];
@@ -178,6 +179,6 @@ export function ProjectGalleryMotion({ children, className, count }: { children:
       originals.forEach(card => { card.inert = false; card.removeAttribute("aria-hidden"); card.style.removeProperty("transform"); card.style.removeProperty("opacity"); card.style.removeProperty("z-index"); delete card.dataset.projectState; });
       captions.forEach(caption => { caption.inert = true; caption.setAttribute("aria-hidden","true"); ["visibility","transition","opacity","transform"].forEach(property=>caption.style.removeProperty(property)); delete caption.dataset.projectState; });
     };
-  },[count]);
+  }), [count]);
   return <div ref={root} className={className} data-project-gallery>{children}</div>;
 }
