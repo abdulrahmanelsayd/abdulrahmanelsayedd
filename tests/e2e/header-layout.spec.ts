@@ -27,8 +27,9 @@ for(const route of ['/','/work','/services','/contact','/about','/header-layout-
   test(`shared left Menu and right logo remain usable on ${route}`,async({page},info)=>{
     const response=await page.goto(route);expect(response?.status()).toBe(route==='/header-layout-not-found'?404:200);await idle(page);
     const before=await composition(page);
+    const scrollable=await page.evaluate(()=>document.documentElement.scrollHeight-innerHeight>50);
     await page.evaluate(()=>window.scrollTo(0,Math.min(650,document.documentElement.scrollHeight-innerHeight)));
-    await expect(header(page)).toHaveAttribute('data-scrolled','true');
+    await expect(header(page)).toHaveAttribute('data-scrolled',String(scrollable));
     const scrolled=await composition(page);
     expect(Math.abs(scrolled.brand.left-before.brand.left)).toBeLessThanOrEqual(.75);
     expect(Math.abs(scrolled.menu.left-before.menu.left)).toBeLessThanOrEqual(.75);
