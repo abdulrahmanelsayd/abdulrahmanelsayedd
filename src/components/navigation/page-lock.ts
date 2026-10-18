@@ -13,7 +13,8 @@ export function lockScroll() {
   const gutter = { value: html.style.getPropertyValue("--navigation-gutter"), priority: html.style.getPropertyPriority("--navigation-gutter") };
   // Collect geometry before pausing Lenis mutates root classes. All lock writes
   // then share the menu commit instead of forcing a style pass between them.
-  const scrollbar = first ? Math.max(0, window.innerWidth - html.clientWidth) : 0;
+  const reserved = first && getComputedStyle(html).getPropertyValue("scrollbar-gutter").includes("stable");
+  const scrollbar = first && !reserved ? Math.max(0, window.innerWidth - html.clientWidth) : 0;
   const padding = first ? parseFloat(getComputedStyle(body).paddingRight) || 0 : 0;
   const resumeScroll = pauseScrollForMenu();
   if (first) {

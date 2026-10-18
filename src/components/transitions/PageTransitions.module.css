@@ -1,5 +1,6 @@
 .viewport { position:fixed; inset:0; z-index:200; height:100dvh; overflow:clip; display:none; pointer-events:none; color:#fff; }
-:global(html[data-page-entry="pending"]),:global(html[data-page-transition]) { overflow:hidden; scrollbar-gutter:auto; }
+:global(html[data-page-entry="pending"]),:global(html[data-page-transition]) { overflow:hidden; }
+:global(html[data-page-entry="pending"]) { background:#141517; }
 :global(html[data-page-entry="pending"]) .viewport,.viewport[data-active="true"] { display:block; pointer-events:auto; touch-action:none; }
 .screen { position:absolute; inset:0; background:#141517; transform:translateY(100%); }
 :global(html[data-page-entry="pending"]) .screen { transform:translateY(0); }
