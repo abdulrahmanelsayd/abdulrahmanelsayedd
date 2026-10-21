@@ -9,26 +9,33 @@ const logo=(page:Page)=>header(page).getByRole('link',{name:`${identity.name} â€
 async function idle(page:Page){await waitForRuntime(page);}
 async function composition(page:Page){
   await expect(logo(page)).toBeVisible(); await expect(toggle(page)).toBeVisible();
+  await expect(page.locator('[data-header-back]')).toHaveCSS('opacity','0');
   const bounds=await header(page).evaluate(element=>{
     const menu=element.querySelector<HTMLElement>('[data-menu-toggle]')!, brand=element.querySelector<HTMLElement>('[data-brand-interactive]')!;
     const signature=brand.querySelector<SVGSVGElement>('[data-brand-logo]')!, m=menu.getBoundingClientRect(), b=brand.getBoundingClientRect(), s=signature.getBoundingClientRect();
     return {menu:m.toJSON(),brand:b.toJSON(),signature:s.toJSON(),width:document.documentElement.clientWidth,hidden:brand.inert,
+      surface:getComputedStyle(menu.querySelector('[data-header-menu-surface]')!).backgroundColor,
+      back:getComputedStyle(element.querySelector('[data-header-back]')!).opacity,
+      ink:element.getAttribute('data-ink'),
       headerLinks:[...element.querySelectorAll<HTMLAnchorElement>('[data-header-top] a')].map(link=>link.getAttribute('href')),
       overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth};
   });
   expect(bounds.headerLinks).toEqual(['/']); expect(bounds.hidden).toBe(false);
   expect(bounds.menu.height).toBeGreaterThanOrEqual(44); expect(bounds.menu.width).toBeGreaterThanOrEqual(44);
   expect(bounds.brand.height).toBeGreaterThanOrEqual(44); expect(bounds.brand.width).toBeGreaterThanOrEqual(44);
-  expect(bounds.menu.right).toBeLessThan(bounds.brand.left);
-  expect(bounds.menu.left).toBeGreaterThanOrEqual(0); expect(bounds.brand.right).toBeLessThanOrEqual(bounds.width);
+  expect(bounds.brand.right).toBeLessThan(bounds.menu.left);
+  expect(bounds.brand.left).toBeGreaterThanOrEqual(0); expect(bounds.menu.right).toBeLessThanOrEqual(bounds.width);
+  expect(bounds.surface).toBe('rgba(0, 0, 0, 0)'); expect(bounds.back).toBe('0');
+  await expect(toggle(page)).toHaveText('Menu');
   expect(bounds.signature.width).toBeGreaterThanOrEqual(80); expect(bounds.overflow).toBe(false);
   return bounds;
 }
 
 for(const route of ['/','/work','/services','/contact','/about','/header-layout-not-found']){
-  test(`shared left Menu and right logo remain usable on ${route}`,async({page},info)=>{
+  test(`transparent shared header keeps the logo left and Menu right on ${route}`,async({page},info)=>{
     const response=await page.goto(route);expect(response?.status()).toBe(route==='/header-layout-not-found'?404:200);await idle(page);
     const before=await composition(page);
+    await expect(header(page)).toHaveAttribute('data-ink',route==='/services'||route==='/work'?'light':'dark');
     const scrollable=await page.evaluate(()=>document.documentElement.scrollHeight-innerHeight>50);
     await page.evaluate(()=>window.scrollTo(0,Math.min(650,document.documentElement.scrollHeight-innerHeight)));
     await expect(header(page)).toHaveAttribute('data-scrolled',String(scrollable));
@@ -37,6 +44,7 @@ for(const route of ['/','/work','/services','/contact','/about','/header-layout-
     expect(Math.abs(scrolled.menu.left-before.menu.left)).toBeLessThanOrEqual(.75);
     await toggle(page).focus(); await expect(toggle(page)).toBeFocused(); await page.keyboard.press('Enter');
     await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toBeVisible();
+    await expect(toggle(page)).toHaveText('Close');
     await expect(page.locator('[data-page-content]')).toHaveAttribute('inert','');
     expect(await page.locator('[data-menu-panel] nav[aria-label="Explore"] > ul a').evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(menuRouteIds.map(id=>getRoute(id).href));
     const motion=await page.locator('[data-menu-panel]').evaluate(element=>({duration:getComputedStyle(element).transitionDuration,delay:getComputedStyle(element).transitionDelay}));
@@ -52,7 +60,7 @@ test('logo stays readable and controls do not overlap at narrow, tablet and wide
   await page.goto('/work');await idle(page);
   for(const width of [195,280,320,390,639,640,767,768,991,992,1440,1920]){
     await page.setViewportSize({width,height:900});
-    await expect.poll(async()=>{const a=await logo(page).boundingBox(),b=await toggle(page).boundingBox();return !!a&&!!b&&b.x+b.width<a.x;}).toBe(true);
+    await expect.poll(async()=>{const a=await logo(page).boundingBox(),b=await toggle(page).boundingBox();return !!a&&!!b&&a.x+a.width<b.x;}).toBe(true);
     await composition(page);
   }
 });
@@ -84,4 +92,22 @@ test('tablet retains the existing inside Contact action when the portrait card i
     await page.locator('[data-menu-panel] a[href="/contact"]:visible').click();
     await expect(page.locator('main')).toHaveAttribute('data-route','/contact');await idle(page);
   }
+});
+
+test('transparent controls switch ink over dark sections and restore after navigation',async({page})=>{
+  for(const [route,selector] of [['/','[data-section="selected-projects"]'],['/work','[data-route="/work"]'],['/about','[data-section="commitments"]'],['/services','[data-services-hero]']]){
+    await page.goto(route);await idle(page);
+    await page.evaluate(selector=>{
+      const region=document.querySelector(selector)!;
+      window.scrollTo({top:region.getBoundingClientRect().top+scrollY,behavior:'instant'});
+    },selector);
+    await expect(header(page)).toHaveAttribute('data-ink','light');
+    await expect(logo(page)).toHaveCSS('color','rgb(244, 244, 244)');
+    await toggle(page).click();await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toHaveCount(0);
+    await expect(header(page)).toHaveAttribute('data-ink','light');
+  }
+  await logo(page).click();await expect(page.locator('main')).toHaveAttribute('data-route','/');await idle(page);
+  await expect(header(page)).toHaveAttribute('data-ink','dark');
+  await expect(logo(page)).toHaveCSS('color','rgb(29, 29, 31)');
 });
