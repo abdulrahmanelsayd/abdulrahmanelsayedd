@@ -111,3 +111,46 @@ test('transparent controls switch ink over dark sections and restore after navig
   await expect(header(page)).toHaveAttribute('data-ink','dark');
   await expect(logo(page)).toHaveCSS('color','rgb(29, 29, 31)');
 });
+
+test('Menu uses the local font and magnetic visuals keep the native hit target stationary',async({page})=>{
+  await page.goto('/work');await idle(page);await page.evaluate(()=>document.fonts.ready);
+  const label=page.locator('[data-header-menu-label]'), surface=page.locator('[data-header-menu-surface]');
+  expect(await label.evaluate(el=>getComputedStyle(el).fontFamily)).toMatch(/Chillax/i);
+  const before=(await toggle(page).boundingBox())!, brand=(await logo(page).boundingBox())!;
+  const signature=await logo(page).locator('svg').evaluate(el=>el.outerHTML);
+  await page.mouse.move(before.x+before.width*.8,before.y+before.height*.2);
+  const magnetic=await page.evaluate(()=>matchMedia('(min-width:541px) and (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)').matches);
+  if(magnetic){
+    await expect(toggle(page)).toHaveAttribute('data-menu-hover','tracking');
+    await expect.poll(()=>surface.evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)).toBeGreaterThan(1);
+  }else{
+    await expect(toggle(page)).not.toHaveAttribute('data-menu-hover');
+    await expect(surface).toHaveCSS('transform','none');
+  }
+  expect(await toggle(page).boundingBox()).toEqual(before);expect(await logo(page).boundingBox()).toEqual(brand);
+  expect(await logo(page).locator('svg').evaluate(el=>el.outerHTML)).toBe(signature);
+  await page.mouse.move(page.viewportSize()!.width/2,200);
+  await expect(toggle(page)).not.toHaveAttribute('data-menu-hover');
+  await expect.poll(()=>surface.evaluate(el=>{const m=new DOMMatrixReadOnly(getComputedStyle(el).transform);return Math.abs(m.m41)+Math.abs(m.m42);})).toBeLessThan(.01);
+});
+
+test('Menu hover clears for reduced motion and held activation opens once without changing the logo',async({page})=>{
+  await page.goto('/services');await idle(page);
+  const button=toggle(page), surface=page.locator('[data-header-menu-surface]');
+  const before=(await button.boundingBox())!;
+  const signature=await logo(page).locator('svg').evaluate(el=>el.outerHTML);
+  await page.mouse.move(before.x+before.width*.9,before.y+before.height*.6);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(button).not.toHaveAttribute('data-menu-hover');
+  await expect(surface).toHaveCSS('transform','none');
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.mouse.move(before.x+before.width*.2,before.y+before.height*.7);
+  await page.mouse.down();
+  expect(await button.boundingBox()).toEqual(before);
+  await page.mouse.up();
+  await expect(button).toHaveAttribute('aria-expanded','true');
+  expect(await logo(page).locator('svg').evaluate(el=>el.outerHTML)).toBe(signature);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toHaveCount(0);
+  await expect(button).toBeFocused();
+});

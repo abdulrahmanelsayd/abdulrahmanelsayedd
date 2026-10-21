@@ -88,6 +88,7 @@
   gap: 16px;
 }
 .menuHit {
+  position: relative;
   border: 0;
   height: 44px;
   min-height: 44px;
@@ -100,36 +101,44 @@
   flex: none;
 }
 .menuSurface {
+  position: relative;
   display: flex;
   align-items: center;
   height: 44px;
   padding: 0 2px 0 16px;
   background: none;
+  pointer-events: none;
 }
-.menuLabel::after {
+.menuSurface::before {
   content: "";
   position: absolute;
-  inset: auto 0 -5px;
-  height: 1px;
+  top: 50%;
+  left: 0;
+  width: calc(clamp(16px,1.2vw,19px) / 2.75);
+  aspect-ratio: 1;
+  border-radius: 50%;
   background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform .3s var(--ease);
+  transform: translateY(-50%);
 }
-@media(hover:hover) and (pointer:fine) {
-  .menuHit:hover .menuLabel::after {
-    transform: scaleX(1);
-    transform-origin: left;
+@media(min-width:541px) and (hover:hover) and (pointer:fine) {
+  .menuHit::before { content: ""; position: absolute; inset: -8px -16px; }
+}
+@media(min-width:541px) and (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  .menuSurface,.menuLabel {
+    transition: transform 1.5s linear(0,.2718,.6464,1,1.25,1.3641,1.3536,1.2575,1.125,1,.9116,.8713,.875,.909,.9558,1,1.0313,1.0455,1.0442,1.0322,1.0156,1,.989,.9839,.9844,.9886,.9945,1,1.0039,1.0057,1.0055,1.004,1.002,1,.9986,.998,.998,.9986,.9993,1,1);
+  }
+  .menuHit[data-menu-hover=tracking] :is(.menuSurface,.menuLabel) {
+    transition-timing-function: cubic-bezier(.23,1,.32,1);
   }
 }
 .menuLabel {
   position: relative;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  font-family: var(--font-chillax),Arial,sans-serif;
   font-size: 17px;
   line-height: 1.25;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -.02em;
-  min-width: 43px;
+  min-width: 3em;
   text-align: right;
 }
 .brand {
@@ -760,6 +769,7 @@ a:focus-visible .underlined::before {
   .menuSurface {
     padding: 0;
   }
+  .menuSurface::before { display: none; }
   .surface {
     padding-left: 8px;
     padding-right: 8px;
@@ -803,7 +813,7 @@ a:focus-visible .underlined::before {
   }
 }
 @media(prefers-reduced-motion:reduce) {
-  .header[data-open][data-scrolled] :is(.bar,.back,.fill,.outline,.backdrop,.bottom,.column,.mobileActions,.line,.wordmark,.menuSurface,.banner,.underlined::before,.menuLabel::after) {
+  .header[data-open][data-scrolled] :is(.bar,.back,.fill,.outline,.backdrop,.bottom,.column,.mobileActions,.line,.wordmark,.menuSurface,.menuLabel,.banner,.underlined::before) {
     transition: none;
   }
 }

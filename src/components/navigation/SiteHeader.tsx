@@ -9,6 +9,7 @@ import { MenuLink } from "./MenuLink";
 import { BrandLogo } from "../brand/BrandLogo";
 import { holdHeaderPress } from "./header-press";
 import { useHeaderInk } from "./use-header-ink";
+import { useMenuHover } from "./use-menu-hover";
 import styles from "./Navigation.module.css";
 
 export function SiteHeader({ navigation, children }: { navigation: Omit<ReturnType<typeof useNavigationMenu>, "application">; children: ReactNode }) {
@@ -18,6 +19,7 @@ export function SiteHeader({ navigation, children }: { navigation: Omit<ReturnTy
   const open = phase === "open", active = phase !== "closed";
   const root = useRef<HTMLElement>(null);
   useHeaderInk(root, pathname);
+  useMenuHover(trigger);
   useLayoutEffect(() => holdHeaderPress(root.current!), []);
   useLayoutEffect(() => {
     let frame = 0, scrolled: boolean | undefined;
