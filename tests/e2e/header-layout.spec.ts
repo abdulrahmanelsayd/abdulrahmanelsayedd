@@ -9,26 +9,33 @@ const logo=(page:Page)=>header(page).getByRole('link',{name:`${identity.name} â€
 async function idle(page:Page){await waitForRuntime(page);}
 async function composition(page:Page){
   await expect(logo(page)).toBeVisible(); await expect(toggle(page)).toBeVisible();
+  await expect(page.locator('[data-header-back]')).toHaveCSS('opacity','0');
   const bounds=await header(page).evaluate(element=>{
     const menu=element.querySelector<HTMLElement>('[data-menu-toggle]')!, brand=element.querySelector<HTMLElement>('[data-brand-interactive]')!;
     const signature=brand.querySelector<SVGSVGElement>('[data-brand-logo]')!, m=menu.getBoundingClientRect(), b=brand.getBoundingClientRect(), s=signature.getBoundingClientRect();
     return {menu:m.toJSON(),brand:b.toJSON(),signature:s.toJSON(),width:document.documentElement.clientWidth,hidden:brand.inert,
+      surface:getComputedStyle(menu.querySelector('[data-header-menu-surface]')!).backgroundColor,
+      back:getComputedStyle(element.querySelector('[data-header-back]')!).opacity,
+      ink:element.getAttribute('data-ink'),
       headerLinks:[...element.querySelectorAll<HTMLAnchorElement>('[data-header-top] a')].map(link=>link.getAttribute('href')),
       overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth};
   });
   expect(bounds.headerLinks).toEqual(['/']); expect(bounds.hidden).toBe(false);
   expect(bounds.menu.height).toBeGreaterThanOrEqual(44); expect(bounds.menu.width).toBeGreaterThanOrEqual(44);
   expect(bounds.brand.height).toBeGreaterThanOrEqual(44); expect(bounds.brand.width).toBeGreaterThanOrEqual(44);
-  expect(bounds.menu.right).toBeLessThan(bounds.brand.left);
-  expect(bounds.menu.left).toBeGreaterThanOrEqual(0); expect(bounds.brand.right).toBeLessThanOrEqual(bounds.width);
+  expect(bounds.brand.right).toBeLessThan(bounds.menu.left);
+  expect(bounds.brand.left).toBeGreaterThanOrEqual(0); expect(bounds.menu.right).toBeLessThanOrEqual(bounds.width);
+  expect(bounds.surface).toBe('rgba(0, 0, 0, 0)'); expect(bounds.back).toBe('0');
+  await expect(toggle(page)).toHaveText('Menu');
   expect(bounds.signature.width).toBeGreaterThanOrEqual(80); expect(bounds.overflow).toBe(false);
   return bounds;
 }
 
 for(const route of ['/','/work','/services','/contact','/about','/header-layout-not-found']){
-  test(`shared left Menu and right logo remain usable on ${route}`,async({page},info)=>{
+  test(`transparent shared header keeps the logo left and Menu right on ${route}`,async({page},info)=>{
     const response=await page.goto(route);expect(response?.status()).toBe(route==='/header-layout-not-found'?404:200);await idle(page);
     const before=await composition(page);
+    await expect(header(page)).toHaveAttribute('data-ink',route==='/services'||route==='/work'?'light':'dark');
     const scrollable=await page.evaluate(()=>document.documentElement.scrollHeight-innerHeight>50);
     await page.evaluate(()=>window.scrollTo(0,Math.min(650,document.documentElement.scrollHeight-innerHeight)));
     await expect(header(page)).toHaveAttribute('data-scrolled',String(scrollable));
@@ -37,6 +44,7 @@ for(const route of ['/','/work','/services','/contact','/about','/header-layout-
     expect(Math.abs(scrolled.menu.left-before.menu.left)).toBeLessThanOrEqual(.75);
     await toggle(page).focus(); await expect(toggle(page)).toBeFocused(); await page.keyboard.press('Enter');
     await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toBeVisible();
+    await expect(toggle(page)).toHaveText('Close');
     await expect(page.locator('[data-page-content]')).toHaveAttribute('inert','');
     expect(await page.locator('[data-menu-panel] nav[aria-label="Explore"] > ul a').evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(menuRouteIds.map(id=>getRoute(id).href));
     const motion=await page.locator('[data-menu-panel]').evaluate(element=>({duration:getComputedStyle(element).transitionDuration,delay:getComputedStyle(element).transitionDelay}));
@@ -52,7 +60,7 @@ test('logo stays readable and controls do not overlap at narrow, tablet and wide
   await page.goto('/work');await idle(page);
   for(const width of [195,280,320,390,639,640,767,768,991,992,1440,1920]){
     await page.setViewportSize({width,height:900});
-    await expect.poll(async()=>{const a=await logo(page).boundingBox(),b=await toggle(page).boundingBox();return !!a&&!!b&&b.x+b.width<a.x;}).toBe(true);
+    await expect.poll(async()=>{const a=await logo(page).boundingBox(),b=await toggle(page).boundingBox();return !!a&&!!b&&a.x+a.width<b.x;}).toBe(true);
     await composition(page);
   }
 });
@@ -84,4 +92,65 @@ test('tablet retains the existing inside Contact action when the portrait card i
     await page.locator('[data-menu-panel] a[href="/contact"]:visible').click();
     await expect(page.locator('main')).toHaveAttribute('data-route','/contact');await idle(page);
   }
+});
+
+test('transparent controls switch ink over dark sections and restore after navigation',async({page})=>{
+  for(const [route,selector] of [['/','[data-section="selected-projects"]'],['/work','[data-route="/work"]'],['/about','[data-section="commitments"]'],['/services','[data-services-hero]']]){
+    await page.goto(route);await idle(page);
+    await page.evaluate(selector=>{
+      const region=document.querySelector(selector)!;
+      window.scrollTo({top:region.getBoundingClientRect().top+scrollY,behavior:'instant'});
+    },selector);
+    await expect(header(page)).toHaveAttribute('data-ink','light');
+    await expect(logo(page)).toHaveCSS('color','rgb(244, 244, 244)');
+    await toggle(page).click();await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toHaveCount(0);
+    await expect(header(page)).toHaveAttribute('data-ink','light');
+  }
+  await logo(page).click();await expect(page.locator('main')).toHaveAttribute('data-route','/');await idle(page);
+  await expect(header(page)).toHaveAttribute('data-ink','dark');
+  await expect(logo(page)).toHaveCSS('color','rgb(29, 29, 31)');
+});
+
+test('Menu uses the local font and magnetic visuals keep the native hit target stationary',async({page})=>{
+  await page.goto('/work');await idle(page);await page.evaluate(()=>document.fonts.ready);
+  const label=page.locator('[data-header-menu-label]'), surface=page.locator('[data-header-menu-surface]');
+  expect(await label.evaluate(el=>getComputedStyle(el).fontFamily)).toMatch(/Chillax/i);
+  const before=(await toggle(page).boundingBox())!, brand=(await logo(page).boundingBox())!;
+  const signature=await logo(page).locator('svg').evaluate(el=>el.outerHTML);
+  await page.mouse.move(before.x+before.width*.8,before.y+before.height*.2);
+  const magnetic=await page.evaluate(()=>matchMedia('(min-width:541px) and (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)').matches);
+  if(magnetic){
+    await expect(toggle(page)).toHaveAttribute('data-menu-hover','tracking');
+    await expect.poll(()=>surface.evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)).toBeGreaterThan(1);
+  }else{
+    await expect(toggle(page)).not.toHaveAttribute('data-menu-hover');
+    await expect(surface).toHaveCSS('transform','none');
+  }
+  expect(await toggle(page).boundingBox()).toEqual(before);expect(await logo(page).boundingBox()).toEqual(brand);
+  expect(await logo(page).locator('svg').evaluate(el=>el.outerHTML)).toBe(signature);
+  await page.mouse.move(page.viewportSize()!.width/2,200);
+  await expect(toggle(page)).not.toHaveAttribute('data-menu-hover');
+  await expect.poll(()=>surface.evaluate(el=>{const m=new DOMMatrixReadOnly(getComputedStyle(el).transform);return Math.abs(m.m41)+Math.abs(m.m42);})).toBeLessThan(.01);
+});
+
+test('Menu hover clears for reduced motion and held activation opens once without changing the logo',async({page})=>{
+  await page.goto('/services');await idle(page);
+  const button=toggle(page), surface=page.locator('[data-header-menu-surface]');
+  const before=(await button.boundingBox())!;
+  const signature=await logo(page).locator('svg').evaluate(el=>el.outerHTML);
+  await page.mouse.move(before.x+before.width*.9,before.y+before.height*.6);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(button).not.toHaveAttribute('data-menu-hover');
+  await expect(surface).toHaveCSS('transform','none');
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.mouse.move(before.x+before.width*.2,before.y+before.height*.7);
+  await page.mouse.down();
+  expect(await button.boundingBox()).toEqual(before);
+  await page.mouse.up();
+  await expect(button).toHaveAttribute('aria-expanded','true');
+  expect(await logo(page).locator('svg').evaluate(el=>el.outerHTML)).toBe(signature);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog',{name:'Navigation',exact:true})).toHaveCount(0);
+  await expect(button).toBeFocused();
 });

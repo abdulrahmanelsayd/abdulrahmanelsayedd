@@ -75,13 +75,13 @@ export function useNavigationMenu() {
       items[next]?.focus({ preventScroll: false });
     };
     const focus = () => {
-      if (!scope.current?.contains(document.activeElement)) controls()[0]?.focus({ preventScroll: true });
+      if (!scope.current?.contains(document.activeElement)) trigger.current?.focus({ preventScroll: true });
     };
     let frame = 0;
     const resize = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        if (!controls().includes(document.activeElement as HTMLElement)) controls()[0]?.focus({ preventScroll: true });
+        if (!controls().includes(document.activeElement as HTMLElement)) trigger.current?.focus({ preventScroll: true });
       });
     };
     const history = () => close(true);
