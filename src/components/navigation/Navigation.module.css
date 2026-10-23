@@ -89,6 +89,7 @@
 }
 .menuHit {
   position: relative;
+  cursor: pointer;
   border: 0;
   height: 44px;
   min-height: 44px;
